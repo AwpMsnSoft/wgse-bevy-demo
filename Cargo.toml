@@ -1,0 +1,17 @@
+[package]
+name = "MSEngineBevy"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = "0.6" # make sure this is the latest version
+lazy_static = "1.4.0"
+static-rc = "0.5.0"
+ghost-cell = "0.2.2"
+rand = "0.8.4"
+
+
+[workspace]
+resolver = "2" # Important! wgpu/Bevy needs this!
