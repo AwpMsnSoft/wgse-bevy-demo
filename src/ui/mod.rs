@@ -1,2 +1,2 @@
-pub(crate) mod main_ui;
-pub(crate) mod system_ui;
+pub(crate) mod main_menu;
+pub(crate) mod system_menu;
