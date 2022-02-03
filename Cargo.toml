@@ -11,6 +11,7 @@ lazy_static = "1.4.0"
 static-rc = "0.5.0"
 ghost-cell = "0.2.2"
 rand = "0.8.4"
+winapi = "0.3.9"
 
 
 [workspace]
