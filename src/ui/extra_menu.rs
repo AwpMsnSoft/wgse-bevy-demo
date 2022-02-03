@@ -1,47 +1,40 @@
-use crate::prelude::*;
 use bevy::prelude::*;
-
-/// main window layout
+use crate::prelude::*;
 
 #[derive(Debug)]
-pub(crate) struct MainMenuRes {
+pub(crate) struct ExtraMenuRes {
     pub bg_handle: Handle<Image>,
-    pub start_handle: Handle<Image>,
-    pub config_handle: Handle<Image>,
-    pub extra_handle: Handle<Image>,
+    pub cg_handle: Handle<Image>,
+    pub scene_handle: Handle<Image>,
+    pub music_handle: Handle<Image>,
     pub exit_handle: Handle<Image>,
 }
 
-impl MainMenuRes {
+impl ExtraMenuRes {
     pub(crate) fn new(asset_server: &AssetServer) -> Self {
         let null_handle = asset_server.load("");
         Self {
-            bg_handle: asset_server.load("textures/title_sel0_2x.png"),
-            start_handle: null_handle.clone(),
-            config_handle: null_handle.clone(),
-            extra_handle: null_handle.clone(),
+            bg_handle: asset_server.load("texture/title_ex_2x.png"),
+            cg_handle: null_handle.clone(),
+            scene_handle: null_handle.clone(),
+            music_handle: null_handle.clone(),
             exit_handle: null_handle.clone(),
         }
     }
 }
 
-#[derive(Component)]
-pub(crate) struct ForStat<T> {
-    pub(crate) states: Vec<T>,
-}
-
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub(crate) enum MainMenuSubState {
+pub(crate) enum ExtraMenuSubState {
     Main,
-    Start,
-    Config,
-    Extra,
+    Cg,
+    Event,
+    Music,
     Exit,
 }
 
-pub(crate) fn main_menu_spawn(
+pub(crate) fn extra_menu_spwan(
     mut commands: Commands,
-    main_menu_res: ResMut<MainMenuRes>,
+    extra_menu_res: ResMut<ExtraMenuRes>,
     windows: Res<Windows>,
 ) {
     let windows = windows.get_primary().unwrap();
@@ -50,12 +43,12 @@ pub(crate) fn main_menu_spawn(
             ..Default::default()
         })
         .insert(ForStat {
-            states: vec![MainMenuSubState::Main],
+            states: vec![MainMenuSubState::Extra],
         })
         .with_children(|parent| {
             parent
                 .spawn_bundle(ImageBundle {
-                    image: main_menu_res.bg_handle.clone().into(),
+                    image: extra_menu_res.bg_handle.clone().into(),
                     style: Style {
                         size: Size {
                             width: Val::Px(windows.requested_width()),
@@ -66,7 +59,8 @@ pub(crate) fn main_menu_spawn(
                     ..Default::default()
                 })
                 .insert(ForStat {
-                    states: vec![MainMenuSubState::Main],
+                    states: vec![MainMenuSubState::Extra],
                 });
         });
 }
+
