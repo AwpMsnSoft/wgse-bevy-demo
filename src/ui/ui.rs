@@ -1,6 +1,6 @@
 use super::{
-    resources::{MainTitleRes, CONFIG_BUTTON_GUID},
-    states::{ExtraTitleState, MainTitleState, UIForStat},
+    resources::{ExtraTitleRes, MainTitleRes, CONFIG_BUTTON_GUID},
+    states::{ExtraTitleState, MainTitleState, UIForStat, UIState},
     widget,
 };
 use bevy::prelude::*;
@@ -10,6 +10,7 @@ pub fn main_title_spawn(
     windows: Res<Windows>,
     main_title_res: Res<MainTitleRes>,
 ) {
+    info!("Enter main_title_spawn.");
     let windows = windows.get_primary().unwrap();
     commands
         .spawn_bundle(NodeBundle {
@@ -63,9 +64,10 @@ pub fn main_title_spawn(
 
 pub fn main_title_despawn(
     mut commands: Commands,
-    state: Res<State<MainTitleState>>,
+    state: Res<State<UIState>>,
     query: Query<(Entity, &UIForStat)>,
 ) {
+    info!("Enter main_title_despawn.");
     for (entity, states) in &mut query.iter() {
         let state = *state.current();
         if !states.0.contains(&state.into()) {
@@ -74,13 +76,47 @@ pub fn main_title_despawn(
     }
 }
 
-pub fn extra_title_spawn() {}
+pub fn extra_title_spawn(
+    mut commands: Commands,
+    windows: Res<Windows>,
+    extra_title_res: Res<ExtraTitleRes>,
+) {
+    info!("Enter extra_title_spawn.");
+    let windows = windows.get_primary().unwrap();
+    commands
+        .spawn_bundle(NodeBundle {
+            style: Style {
+                size: Size {
+                    width: Val::Px(windows.width() as f32),
+                    height: Val::Px(windows.height() as f32),
+                },
+                ..Default::default()
+            },
+            ..Default::default()
+        })
+        .insert(UIForStat(vec![MainTitleState::Extra.into()]))
+        .with_children(|p| {
+            p.spawn_bundle(ImageBundle {
+                style: Style {
+                    size: Size {
+                        width: Val::Px(windows.width() as f32),
+                        height: Val::Px(windows.height() as f32),
+                    },
+                    position_type: PositionType::Absolute,
+                    ..Default::default()
+                },
+                image: extra_title_res.bg_image.clone().into(),
+                ..Default::default()
+            });
+        });
+}
 
 pub fn extra_title_despawn(
     mut commands: Commands,
-    state: Res<State<ExtraTitleState>>,
+    state: Res<State<UIState>>,
     query: Query<(Entity, &UIForStat)>,
 ) {
+    info!("Enter extra_title_despawn.");
     for (entity, states) in &mut query.iter() {
         let state = *state.current();
         if !states.0.contains(&state.into()) {

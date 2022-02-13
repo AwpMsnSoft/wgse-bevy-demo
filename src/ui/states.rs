@@ -32,26 +32,26 @@ pub enum UIState {
     ExtraTitleState(ExtraTitleState),
 }
 
-impl Into<UIState> for MainTitleState {
-    fn into(self) -> UIState {
-        UIState::MainTitleState(self)
+impl From<MainTitleState> for UIState {
+    fn from(state: MainTitleState) -> Self {
+        UIState::MainTitleState(state)
     }
 }
 
-impl Into<UIState> for StartTitleState {
-    fn into(self) -> UIState {
-        UIState::StartTitleState(self)
+impl From<StartTitleState> for UIState {
+    fn from(state: StartTitleState) -> Self {
+        UIState::StartTitleState(state)
     }
 }
 
-impl Into<UIState> for ConfigTitleState {
-    fn into(self) -> UIState {
-        UIState::ConfigTitleState(self)
+impl From<ConfigTitleState> for UIState {
+    fn from(state: ConfigTitleState) -> Self {
+        UIState::ConfigTitleState(state)
     }
 }
 
-impl Into<UIState> for ExtraTitleState {
-    fn into(self) -> UIState {
-        UIState::ExtraTitleState(self)
+impl From<ExtraTitleState> for UIState {
+    fn from(state: ExtraTitleState) -> Self {
+        UIState::ExtraTitleState(state)
     }
 }
