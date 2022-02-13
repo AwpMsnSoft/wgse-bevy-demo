@@ -12,6 +12,8 @@ static-rc = "0.5.0"
 ghost-cell = "0.2.2"
 rand = "0.8.4"
 winapi = "0.3.9"
+serde = "1.0.89"
+serde_json = "1.0"
 
 
 [workspace]
