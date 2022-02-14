@@ -18,6 +18,7 @@ impl Plugin for UIPlugin {
             .add_system_set(
                 SystemSet::on_enter(UIState::from(MainTitleState::Main))
                     .with_system(main_title_spawn)
+                    // TODO: how to handle despawn on exit event?
                     .with_system(extra_title_despawn),
             )
             .add_system_set(
@@ -31,6 +32,7 @@ impl Plugin for UIPlugin {
             .add_system_set(
                 SystemSet::on_enter(UIState::from(MainTitleState::Extra))
                     .with_system(extra_title_spawn)
+                    // TODO: how to handle despawn on exit event?
                     .with_system(main_title_despawn),
             )
             .add_system_set(

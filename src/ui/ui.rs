@@ -22,14 +22,6 @@ pub fn main_title_spawn(
     let windows = windows.get_primary().unwrap();
     commands
         .spawn_bundle(NodeBundle {
-            style: Style {
-                size: Size {
-                    width: Val::Px(windows.width() as f32),
-                    height: Val::Px(windows.height() as f32),
-                },
-                position_type: PositionType::Absolute,
-                ..Default::default()
-            },
             ..Default::default()
         })
         .insert(UIForStat(vec![MainTitleState::Main.into()]))
@@ -49,8 +41,7 @@ pub fn main_title_spawn(
                     image: main_title_res.bg_image.clone().into(),
                     ..Default::default()
                 },
-            })
-            .insert(UIForStat(vec![MainTitleState::Main.into()]));
+            });
             // 1. start button
             p.spawn_bundle(WidgetBundle {
                 id: START_BUTTON_GUID,
@@ -73,8 +64,7 @@ pub fn main_title_spawn(
                     image: main_title_res.start_button_hover_image.clone().into(),
                     ..Default::default()
                 },
-            })
-            .insert(UIForStat(vec![MainTitleState::Main.into()]));
+            });
             // 2. config button
             p.spawn_bundle(WidgetBundle {
                 id: CONFIG_BUTTON_GUID,
@@ -97,8 +87,7 @@ pub fn main_title_spawn(
                     image: main_title_res.config_button_hover_image.clone().into(),
                     ..Default::default()
                 },
-            })
-            .insert(UIForStat(vec![MainTitleState::Main.into()]));
+            });
             // 3. extra button
             p.spawn_bundle(WidgetBundle {
                 id: EXTRA_BUTTON_GUID,
@@ -121,8 +110,7 @@ pub fn main_title_spawn(
                     image: main_title_res.extra_button_hover_image.clone().into(),
                     ..Default::default()
                 },
-            })
-            .insert(UIForStat(vec![MainTitleState::Main.into()]));
+            });
             // 4. exit button
             p.spawn_bundle(WidgetBundle {
                 id: EXIT_BUTTON_GUID,
@@ -145,22 +133,25 @@ pub fn main_title_spawn(
                     image: main_title_res.exit_button_hover_image.clone().into(),
                     ..Default::default()
                 },
-            })
-            .insert(UIForStat(vec![MainTitleState::Main.into()]));
+            });
         });
 }
 
 pub fn main_title_despawn(
     mut commands: Commands,
     state: Res<State<UIState>>,
-    query: Query<(Entity, &UIForStat)>,
+    query: Query<(Entity, &UIForStat, &Children)>,
 ) {
     debug!("Enter main_title_despawn.");
-    for (entity, states) in &mut query.iter() {
+    for (entity, states, children) in &mut query.iter() {
         let state = *state.current();
         debug!("current state: {:?}", state);
         if !states.0.contains(&state.into()) {
             debug!("main_title_despawn: entity: {:?}", entity);
+            for &child in children.iter() {
+                debug!("main_title_despawn: child: {:?}", child);
+                commands.entity(child).despawn();
+            }
             commands.entity(entity).despawn();
         }
     }
@@ -175,14 +166,6 @@ pub fn extra_title_spawn(
     let windows = windows.get_primary().unwrap();
     commands
         .spawn_bundle(NodeBundle {
-            style: Style {
-                size: Size {
-                    width: Val::Px(windows.width() as f32),
-                    height: Val::Px(windows.height() as f32),
-                },
-                position_type: PositionType::Absolute,
-                ..Default::default()
-            },
             ..Default::default()
         })
         .insert(UIForStat(vec![MainTitleState::Extra.into()]))
@@ -202,8 +185,7 @@ pub fn extra_title_spawn(
                     image: extra_title_res.bg_image.clone().into(),
                     ..Default::default()
                 },
-            })
-            .insert(UIForStat(vec![MainTitleState::Extra.into()]));
+            });
             // 1. cg button
             p.spawn_bundle(WidgetBundle {
                 id: CG_BUTTON_GUID,
@@ -226,8 +208,7 @@ pub fn extra_title_spawn(
                     image: extra_title_res.cg_button_hover_image.clone().into(),
                     ..Default::default()
                 },
-            })
-            .insert(UIForStat(vec![MainTitleState::Extra.into()]));
+            });
             // 2. scene button
             p.spawn_bundle(WidgetBundle {
                 id: SCENE_BUTTON_GUID,
@@ -250,8 +231,7 @@ pub fn extra_title_spawn(
                     image: extra_title_res.scene_button_hover_image.clone().into(),
                     ..Default::default()
                 },
-            })
-            .insert(UIForStat(vec![MainTitleState::Extra.into()]));
+            });
             // 3. music button
             p.spawn_bundle(WidgetBundle {
                 id: MUSIC_BUTTON_GUID,
@@ -274,8 +254,7 @@ pub fn extra_title_spawn(
                     image: extra_title_res.music_button_hover_image.clone().into(),
                     ..Default::default()
                 },
-            })
-            .insert(UIForStat(vec![MainTitleState::Extra.into()]));
+            });
             // 4. back button
             p.spawn_bundle(WidgetBundle {
                 id: BACK_BUTTON_GUID,
@@ -298,22 +277,25 @@ pub fn extra_title_spawn(
                     image: extra_title_res.back_button_hover_image.clone().into(),
                     ..Default::default()
                 },
-            })
-            .insert(UIForStat(vec![MainTitleState::Extra.into()]));
+            });
         });
 }
 
 pub fn extra_title_despawn(
     mut commands: Commands,
     state: Res<State<UIState>>,
-    query: Query<(Entity, &UIForStat)>,
+    query: Query<(Entity, &UIForStat, &Children)>,
 ) {
     debug!("Enter extra_title_despawn.");
-    for (entity, states) in &mut query.iter() {
+    for (entity, states, children) in &mut query.iter() {
         let state = *state.current();
         debug!("current state: {:?}", state);
         if !states.0.contains(&state.into()) {
             debug!("extra_title_despawn: entity: {:?}", entity);
+            for &child in children.iter() {
+                debug!("extra_title_despawn: child: {:?}", child);
+                commands.entity(child).despawn();
+            }
             commands.entity(entity).despawn();
         }
     }

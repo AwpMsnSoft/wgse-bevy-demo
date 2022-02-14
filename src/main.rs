@@ -1,5 +1,5 @@
-use bevy::log::{Level, LogPlugin, LogSettings};
 // #![windows_subsystem = "windows"]
+use bevy::log::{Level, LogSettings};
 use bevy::prelude::*;
 use bevy::*;
 
