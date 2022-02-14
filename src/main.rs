@@ -1,3 +1,4 @@
+use bevy::log::{Level, LogPlugin, LogSettings};
 // #![windows_subsystem = "windows"]
 use bevy::prelude::*;
 use bevy::*;
@@ -5,9 +6,9 @@ use bevy::*;
 pub(crate) mod cg;
 pub(crate) mod media;
 pub(crate) mod script;
+pub(crate) mod system;
 pub(crate) mod text;
 pub(crate) mod ui;
-pub(crate) mod system;
 
 fn main() {
     App::new()
@@ -24,6 +25,10 @@ fn main() {
             }
         })
         .insert_resource(ClearColor(Color::rgb_u8(255, 255, 255)))
+        .insert_resource(LogSettings {
+            level: Level::DEBUG,
+            filter: String::from("wgpu=error,bevy_render=info,naga=info"),
+        })
         .add_startup_system(|windows: Res<Windows>| {
             info!("Game initializing...");
             info!("Create window: {:?}", windows.get_primary().unwrap());

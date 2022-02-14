@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize, Component)]
+#[derive(Debug, Serialize, Deserialize, Component, PartialEq, Eq)]
 pub struct WidgetID(pub i32);
 
 impl Default for WidgetID {

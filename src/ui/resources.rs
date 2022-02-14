@@ -1,3 +1,4 @@
+use super::widget::WidgetID;
 use bevy::prelude::*;
 
 pub const MAIN_TITLE_BG_IMAGE: &str = "pictures/title_sel0.png";
@@ -6,13 +7,23 @@ pub const CONFIG_BUTTON_HOVER_IMAGE: &str = "pictures/button/config_button_hover
 pub const EXTRA_BUTTON_HOVER_IMAGE: &str = "pictures/button/extra_button_hovered.png";
 pub const EXIT_BUTTON_HOVER_IMAGE: &str = "pictures/button/exit_button_hovered.png";
 
-pub const CONFIG_BUTTON_GUID: i32 = 10001;
+pub const MAIN_TITLE_BG_GUID: WidgetID = WidgetID(10100);
+pub const START_BUTTON_GUID: WidgetID = WidgetID(10101);
+pub const CONFIG_BUTTON_GUID: WidgetID = WidgetID(10102);
+pub const EXTRA_BUTTON_GUID: WidgetID = WidgetID(10103);
+pub const EXIT_BUTTON_GUID: WidgetID = WidgetID(10104);
 
 pub const EXTRA_TILTE_BG_IAMGE: &str = "pictures/title_ex0.png";
 pub const CG_BUTTON_HOVER_IMAGE: &str = "pictures/button/cg_button_hovered.png";
 pub const MUSIC_BUTTON_HOVER_IMAGE: &str = "pictures/button/music_button_hovered.png";
 pub const SCENE_BUTTON_HOVER_IMAGE: &str = "pictures/button/scene_button_hovered.png";
 pub const BACK_BUTTON_HOVER_IMAGE: &str = "pictures/button/back_button_hovered.png";
+
+pub const EXTRA_TITLE_BG_GUID: WidgetID = WidgetID(10200);
+pub const CG_BUTTON_GUID: WidgetID = WidgetID(10201);
+pub const MUSIC_BUTTON_GUID: WidgetID = WidgetID(10202);
+pub const SCENE_BUTTON_GUID: WidgetID = WidgetID(10203);
+pub const BACK_BUTTON_GUID: WidgetID = WidgetID(10204);
 
 #[derive(Debug)]
 pub struct MainTitleRes {
