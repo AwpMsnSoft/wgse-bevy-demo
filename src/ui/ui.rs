@@ -1,6 +1,7 @@
 use super::{
     resources::{ExtraTitleRes, MainTitleRes},
     states::UIState,
+    widget::WidgetID,
 };
 use crate::ui::{
     resources::{
@@ -21,29 +22,25 @@ pub fn main_title_spawn(
     debug!("Enter main_title_spawn.");
     let windows = windows.get_primary().unwrap();
     commands
-        .spawn_bundle(NodeBundle {
-            ..Default::default()
-        })
-        .insert(UIForStat(vec![MainTitleState::Main.into()]))
-        .with_children(|p| {
-            // main title background
-            p.spawn_bundle(WidgetBundle {
-                id: MAIN_TITLE_BG_GUID,
-                children: ImageBundle {
-                    style: Style {
-                        size: Size {
-                            width: Val::Px(windows.width() as f32),
-                            height: Val::Px(windows.height() as f32),
-                        },
-                        position_type: PositionType::Absolute,
-                        ..Default::default()
+        // main title background
+        .spawn_bundle(WidgetBundle {
+            id: MAIN_TITLE_BG_GUID,
+            children: ImageBundle {
+                style: Style {
+                    size: Size {
+                        width: Val::Px(windows.width() as f32),
+                        height: Val::Px(windows.height() as f32),
                     },
-                    image: main_title_res.bg_image.clone().into(),
+                    position_type: PositionType::Absolute,
                     ..Default::default()
                 },
-            });
+                image: main_title_res.bg_image.clone().into(),
+                ..Default::default()
+            },
+        })
+        .with_children(|title| {
             // 1. start button
-            p.spawn_bundle(WidgetBundle {
+            title.spawn_bundle(WidgetBundle {
                 id: START_BUTTON_GUID,
                 children: ButtonBundle {
                     style: Style {
@@ -66,7 +63,7 @@ pub fn main_title_spawn(
                 },
             });
             // 2. config button
-            p.spawn_bundle(WidgetBundle {
+            title.spawn_bundle(WidgetBundle {
                 id: CONFIG_BUTTON_GUID,
                 children: ButtonBundle {
                     style: Style {
@@ -89,7 +86,7 @@ pub fn main_title_spawn(
                 },
             });
             // 3. extra button
-            p.spawn_bundle(WidgetBundle {
+            title.spawn_bundle(WidgetBundle {
                 id: EXTRA_BUTTON_GUID,
                 children: ButtonBundle {
                     style: Style {
@@ -112,7 +109,7 @@ pub fn main_title_spawn(
                 },
             });
             // 4. exit button
-            p.spawn_bundle(WidgetBundle {
+            title.spawn_bundle(WidgetBundle {
                 id: EXIT_BUTTON_GUID,
                 children: ButtonBundle {
                     style: Style {
@@ -140,13 +137,11 @@ pub fn main_title_spawn(
 pub fn main_title_despawn(
     mut commands: Commands,
     state: Res<State<UIState>>,
-    query: Query<(Entity, &UIForStat, &Children)>,
+    query: Query<(Entity, &WidgetID, &Children)>,
 ) {
-    debug!("Enter main_title_despawn.");
-    for (entity, states, children) in &mut query.iter() {
-        let state = *state.current();
-        debug!("current state: {:?}", state);
-        if !states.0.contains(&state.into()) {
+    for (entity, id, children) in &mut query.iter() {
+        debug!("Enter main_title_despawn. current state: {:?}", state);
+        if id == &MAIN_TITLE_BG_GUID {
             debug!("main_title_despawn: entity: {:?}", entity);
             for &child in children.iter() {
                 debug!("main_title_despawn: child: {:?}", child);
@@ -165,29 +160,25 @@ pub fn extra_title_spawn(
     debug!("Enter extra_title_spawn.");
     let windows = windows.get_primary().unwrap();
     commands
-        .spawn_bundle(NodeBundle {
-            ..Default::default()
-        })
-        .insert(UIForStat(vec![MainTitleState::Extra.into()]))
-        .with_children(|p| {
-            // extra title background
-            p.spawn_bundle(WidgetBundle {
-                id: EXTRA_TITLE_BG_GUID,
-                children: ImageBundle {
-                    style: Style {
-                        size: Size {
-                            width: Val::Px(windows.width() as f32),
-                            height: Val::Px(windows.height() as f32),
-                        },
-                        position_type: PositionType::Absolute,
-                        ..Default::default()
+        // extra title background
+        .spawn_bundle(WidgetBundle {
+            id: EXTRA_TITLE_BG_GUID,
+            children: ImageBundle {
+                style: Style {
+                    size: Size {
+                        width: Val::Px(windows.width() as f32),
+                        height: Val::Px(windows.height() as f32),
                     },
-                    image: extra_title_res.bg_image.clone().into(),
+                    position_type: PositionType::Absolute,
                     ..Default::default()
                 },
-            });
+                image: extra_title_res.bg_image.clone().into(),
+                ..Default::default()
+            },
+        })
+        .with_children(|title| {
             // 1. cg button
-            p.spawn_bundle(WidgetBundle {
+            title.spawn_bundle(WidgetBundle {
                 id: CG_BUTTON_GUID,
                 children: ButtonBundle {
                     style: Style {
@@ -210,7 +201,7 @@ pub fn extra_title_spawn(
                 },
             });
             // 2. scene button
-            p.spawn_bundle(WidgetBundle {
+            title.spawn_bundle(WidgetBundle {
                 id: SCENE_BUTTON_GUID,
                 children: ButtonBundle {
                     style: Style {
@@ -233,7 +224,7 @@ pub fn extra_title_spawn(
                 },
             });
             // 3. music button
-            p.spawn_bundle(WidgetBundle {
+            title.spawn_bundle(WidgetBundle {
                 id: MUSIC_BUTTON_GUID,
                 children: ButtonBundle {
                     style: Style {
@@ -256,7 +247,7 @@ pub fn extra_title_spawn(
                 },
             });
             // 4. back button
-            p.spawn_bundle(WidgetBundle {
+            title.spawn_bundle(WidgetBundle {
                 id: BACK_BUTTON_GUID,
                 children: ButtonBundle {
                     style: Style {
@@ -284,13 +275,11 @@ pub fn extra_title_spawn(
 pub fn extra_title_despawn(
     mut commands: Commands,
     state: Res<State<UIState>>,
-    query: Query<(Entity, &UIForStat, &Children)>,
+    query: Query<(Entity, &WidgetID, &Children)>,
 ) {
-    debug!("Enter extra_title_despawn.");
-    for (entity, states, children) in &mut query.iter() {
-        let state = *state.current();
-        debug!("current state: {:?}", state);
-        if !states.0.contains(&state.into()) {
+    for (entity, id, children) in &mut query.iter() {
+        debug!("Enter extra_title_despawn. current state: {:?}", state);
+        if id == &EXTRA_TITLE_BG_GUID {
             debug!("extra_title_despawn: entity: {:?}", entity);
             for &child in children.iter() {
                 debug!("extra_title_despawn: child: {:?}", child);
