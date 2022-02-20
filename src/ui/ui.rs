@@ -1,139 +1,76 @@
-use super::{resources::UiImageResources, states::UIState, widget::WidgetID};
-use crate::ui::{
-    resources::{
-        BACK_BUTTON_GUID, CG_BUTTON_GUID, CONFIG_BUTTON_GUID, EXIT_BUTTON_GUID, EXTRA_BUTTON_GUID,
-        EXTRA_TITLE_BG_GUID, MAIN_TITLE_BG_GUID, MUSIC_BUTTON_GUID, SCENE_BUTTON_GUID,
-        START_BUTTON_GUID,
+use super::{descriptors::WidgetID, resources::UiImageResources, states::UiState};
+use crate::{
+    button,
+    ui::{
+        descriptors::{ButtonDescriptor, WidgetBundle},
+        resources::{
+            BACK_BUTTON_GUID, CG_BUTTON_GUID, CONFIG_BUTTON_GUID, EXIT_BUTTON_GUID,
+            EXTRA_BUTTON_GUID, EXTRA_TITLE_BG_GUID, MAIN_TITLE_BG_GUID, MUSIC_BUTTON_GUID,
+            SCENE_BUTTON_GUID, START_BUTTON_GUID,
+        },
     },
-    states::{MainTitleState, UIForStat},
-    widget::WidgetBundle,
 };
-use bevy::prelude::*;
-use std::sync::Once;
+use bevy::{prelude::*, render::texture::DEFAULT_IMAGE_HANDLE};
 
-pub fn main_title_spawn(
-    mut commands: Commands,
-    windows: Res<Windows>,
-    // main_title_res: Res<MainTitleRes>,
-) {
+pub fn main_title_spawn(mut commands: Commands, windows: Res<Windows>) {
     debug!("Enter main_title_spawn.");
     let windows = windows.get_primary().unwrap();
     commands
         // main title background
         .spawn_bundle(WidgetBundle {
             id: MAIN_TITLE_BG_GUID,
-            children: ImageBundle {
-                style: Style {
-                    size: Size {
-                        width: Val::Px(windows.width() as f32),
-                        height: Val::Px(windows.height() as f32),
-                    },
-                    position_type: PositionType::Absolute,
-                    ..Default::default()
-                },
-                // image: main_title_res.bg_image.clone().into(),
-                ..Default::default()
+            children: button! {
+                windows.width(), windows.height(),
+                0.0, windows.height()
             },
         })
         .with_children(|title| {
             // 1. start button
             title.spawn_bundle(WidgetBundle {
                 id: START_BUTTON_GUID,
-                children: ButtonBundle {
-                    style: Style {
-                        size: Size {
-                            width: Val::Px(100.0),
-                            height: Val::Px(40.0),
-                        },
-                        position_type: PositionType::Absolute,
-                        position: Rect {
-                            left: Val::Px(200.0),
-                            right: Val::Px(300.0),
-                            top: Val::Px(windows.height() - 480.0),
-                            bottom: Val::Px(windows.height() - 520.0),
-                        },
-                        ..Default::default()
-                    },
-                    visibility: Visibility { is_visible: false },
-                    // image: main_title_res.start_button_hover_image.clone().into(),
-                    ..Default::default()
-                },
+                children: button! {
+                    100.0, 40.0,
+                    200.0, windows.height() - 480.0
+                }
             });
             // 2. config button
             title.spawn_bundle(WidgetBundle {
                 id: CONFIG_BUTTON_GUID,
-                children: ButtonBundle {
-                    style: Style {
-                        size: Size {
-                            width: Val::Px(100.0),
-                            height: Val::Px(40.0),
-                        },
-                        position_type: PositionType::Absolute,
-                        position: Rect {
-                            left: Val::Px(300.0),
-                            right: Val::Px(400.0),
-                            top: Val::Px(windows.height() - 480.0),
-                            bottom: Val::Px(windows.height() - 520.0),
-                        },
-                        ..Default::default()
-                    },
-                    visibility: Visibility { is_visible: false },
-                    // image: main_title_res.config_button_hover_image.clone().into(),
-                    ..Default::default()
-                },
+                children: button! {
+                    100.0, 40.0,
+                    300.0, windows.height() - 480.0
+                }
             });
             // 3. extra button
             title.spawn_bundle(WidgetBundle {
                 id: EXTRA_BUTTON_GUID,
-                children: ButtonBundle {
-                    style: Style {
-                        size: Size {
-                            width: Val::Px(100.0),
-                            height: Val::Px(40.0),
-                        },
-                        position_type: PositionType::Absolute,
-                        position: Rect {
-                            left: Val::Px(400.0),
-                            right: Val::Px(500.0),
-                            top: Val::Px(windows.height() - 480.0),
-                            bottom: Val::Px(windows.height() - 520.0),
-                        },
-                        ..Default::default()
-                    },
-                    visibility: Visibility { is_visible: false },
-                    // image: main_title_res.extra_button_hover_image.clone().into(),
-                    ..Default::default()
-                },
+                children: button! {
+                    100.0, 40.0,
+                    400.0, windows.height() - 480.0
+                }
             });
             // 4. exit button
             title.spawn_bundle(WidgetBundle {
                 id: EXIT_BUTTON_GUID,
-                children: ButtonBundle {
-                    style: Style {
-                        size: Size {
-                            width: Val::Px(100.0),
-                            height: Val::Px(40.0),
-                        },
-                        position_type: PositionType::Absolute,
-                        position: Rect {
-                            left: Val::Px(500.0),
-                            right: Val::Px(600.0),
-                            top: Val::Px(windows.height() - 480.0),
-                            bottom: Val::Px(windows.height() - 520.0),
-                        },
-                        ..Default::default()
-                    },
-                    visibility: Visibility { is_visible: false },
-                    // image: main_title_res.exit_button_hover_image.clone().into(),
-                    ..Default::default()
-                },
+                children: button! {
+                    100.0, 40.0,
+                    500.0, windows.height() - 480.0
+                }
             });
         });
 }
 
+pub fn main_title_show(mut visibility_query: Query<(&WidgetID, &mut Visibility)>) {
+    for (id, mut visibility) in visibility_query.iter_mut() {
+        if id == &MAIN_TITLE_BG_GUID {
+            visibility.is_visible = true;
+        }
+    }
+}
+
 pub fn main_title_despawn(
     mut commands: Commands,
-    state: Res<State<UIState>>,
+    state: Res<State<UiState>>,
     query: Query<(Entity, &WidgetID, &Children)>,
 ) {
     for (entity, id, children) in &mut query.iter() {
@@ -160,118 +97,58 @@ pub fn extra_title_spawn(
         // extra title background
         .spawn_bundle(WidgetBundle {
             id: EXTRA_TITLE_BG_GUID,
-            children: ImageBundle {
-                style: Style {
-                    size: Size {
-                        width: Val::Px(windows.width() as f32),
-                        height: Val::Px(windows.height() as f32),
-                    },
-                    position_type: PositionType::Absolute,
-                    ..Default::default()
-                },
-                // image: extra_title_res.bg_image.clone().into(),
-                ..Default::default()
+            children: button! {
+                windows.width(), windows.height(),
+                0.0, windows.height()
             },
         })
         .with_children(|title| {
             // 1. cg button
             title.spawn_bundle(WidgetBundle {
                 id: CG_BUTTON_GUID,
-                children: ButtonBundle {
-                    style: Style {
-                        size: Size {
-                            width: Val::Px(100.0),
-                            height: Val::Px(40.0),
-                        },
-                        position_type: PositionType::Absolute,
-                        position: Rect {
-                            left: Val::Px(200.0),
-                            right: Val::Px(300.0),
-                            top: Val::Px(windows.height() - 480.0),
-                            bottom: Val::Px(windows.height() - 520.0),
-                        },
-                        ..Default::default()
-                    },
-                    visibility: Visibility { is_visible: false },
-                    // image: extra_title_res.cg_button_hover_image.clone().into(),
-                    ..Default::default()
-                },
+                children: button! {
+                    100.0, 40.0,
+                    200.0, windows.height() - 480.0
+                }
             });
             // 2. scene button
             title.spawn_bundle(WidgetBundle {
                 id: SCENE_BUTTON_GUID,
-                children: ButtonBundle {
-                    style: Style {
-                        size: Size {
-                            width: Val::Px(100.0),
-                            height: Val::Px(40.0),
-                        },
-                        position_type: PositionType::Absolute,
-                        position: Rect {
-                            left: Val::Px(300.0),
-                            right: Val::Px(400.0),
-                            top: Val::Px(windows.height() - 480.0),
-                            bottom: Val::Px(windows.height() - 520.0),
-                        },
-                        ..Default::default()
-                    },
-                    visibility: Visibility { is_visible: false },
-                    // image: extra_title_res.scene_button_hover_image.clone().into(),
-                    ..Default::default()
-                },
+                children: button! {
+                    100.0, 40.0,
+                    300.0, windows.height() - 480.0
+                }
             });
             // 3. music button
             title.spawn_bundle(WidgetBundle {
                 id: MUSIC_BUTTON_GUID,
-                children: ButtonBundle {
-                    style: Style {
-                        size: Size {
-                            width: Val::Px(100.0),
-                            height: Val::Px(40.0),
-                        },
-                        position_type: PositionType::Absolute,
-                        position: Rect {
-                            left: Val::Px(400.0),
-                            right: Val::Px(500.0),
-                            top: Val::Px(windows.height() - 480.0),
-                            bottom: Val::Px(windows.height() - 520.0),
-                        },
-                        ..Default::default()
-                    },
-                    visibility: Visibility { is_visible: false },
-                    // image: extra_title_res.music_button_hover_image.clone().into(),
-                    ..Default::default()
-                },
+                children: button! {
+                    100.0, 40.0,
+                    400.0, windows.height() - 480.0
+                }
             });
             // 4. back button
             title.spawn_bundle(WidgetBundle {
                 id: BACK_BUTTON_GUID,
-                children: ButtonBundle {
-                    style: Style {
-                        size: Size {
-                            width: Val::Px(100.0),
-                            height: Val::Px(40.0),
-                        },
-                        position_type: PositionType::Absolute,
-                        position: Rect {
-                            left: Val::Px(500.0),
-                            right: Val::Px(600.0),
-                            top: Val::Px(windows.height() - 480.0),
-                            bottom: Val::Px(windows.height() - 520.0),
-                        },
-                        ..Default::default()
-                    },
-                    visibility: Visibility { is_visible: false },
-                    // image: extra_title_res.back_button_hover_image.clone().into(),
-                    ..Default::default()
-                },
+                children: button! {
+                    100.0, 40.0,
+                    500.0, windows.height() - 480.0
+                }
             });
         });
 }
 
+pub fn extra_title_show(mut visibility_query: Query<(&WidgetID, &mut Visibility)>) {
+    for (id, mut visibility) in visibility_query.iter_mut() {
+        if id == &EXTRA_TITLE_BG_GUID {
+            visibility.is_visible = true;
+        }
+    }
+}
+
 pub fn extra_title_despawn(
     mut commands: Commands,
-    state: Res<State<UIState>>,
+    state: Res<State<UiState>>,
     query: Query<(Entity, &WidgetID, &Children)>,
 ) {
     for (entity, id, children) in &mut query.iter() {
@@ -288,21 +165,13 @@ pub fn extra_title_despawn(
 }
 
 pub fn title_load_images(
-    mut widgets_query: Query<(&WidgetID, &mut UiImage, &mut Visibility)>,
+    mut widgets_query: Query<(&WidgetID, &mut UiImage)>,
     res: Res<UiImageResources>,
 ) {
-    // static ONCE: Once = Once::new();
-    // ONCE.call_once(|| {
-        debug!("Enter main_title_load_images. which image to load?");
-        for (id, mut image, mut visibility) in widgets_query.iter_mut() {
-            if id == &MAIN_TITLE_BG_GUID || id == &EXTRA_TITLE_BG_GUID {
-                visibility.is_visible = true;
-            }
+    for (id, mut image) in widgets_query.iter_mut() {
+        if image.0 == DEFAULT_IMAGE_HANDLE.typed() {
+            debug!("loading image for widget: {:?}", id);
             *image = res.0.get(id).unwrap().clone().into();
-            debug!(
-                "load id: {:?}, image: {:?}, visibility: {:?}",
-                id, image, visibility
-            );
         }
-    // })
+    }
 }

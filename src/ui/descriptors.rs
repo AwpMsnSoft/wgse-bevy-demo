@@ -40,19 +40,20 @@ pub struct ButtonDescriptor {
     pub position: Vec2,
 }
 
-impl Into<ButtonBundle> for ButtonDescriptor {
-    fn into(self) -> ButtonBundle {
+impl From<ButtonDescriptor> for ButtonBundle {
+    fn from(descriptor: ButtonDescriptor) -> Self {
         ButtonBundle {
-            node: Node { size: self.size },
             style: Style {
+                size: Size {
+                    width: Val::Px(descriptor.size.x),
+                    height: Val::Px(descriptor.size.y),
+                },
                 position_type: PositionType::Absolute,
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
                 position: Rect {
-                    left: Val::Px(self.position.x),
-                    right: Val::Px(self.position.x + self.size.x),
-                    top: Val::Px(self.position.y),
-                    bottom: Val::Px(self.position.y + self.size.y),
+                    left: Val::Px(descriptor.position.x),
+                    right: Val::Px(descriptor.position.x + descriptor.size.x),
+                    top: Val::Px(descriptor.position.y),
+                    bottom: Val::Px(descriptor.position.y - descriptor.size.y),
                 },
                 ..Default::default()
             },
@@ -62,32 +63,12 @@ impl Into<ButtonBundle> for ButtonDescriptor {
     }
 }
 
-#[test]
-fn test_serialize_button_descriptor() {
-    let descriptor = Descriptor {
-        id: 1,
-        content: WidgetDescriptor::button(ButtonDescriptor {
-            size: Vec2::new(100.0, 100.0),
-            position: Vec2::new(10.0, 10.0),
-        }),
-    };
-
-    let serialized = serde_json::to_string(&descriptor).unwrap();
-    println!("{}", serialized);
-}
-
-#[test]
-fn test_deserialize_button_descriptor() {
-    let serialized = r#"
-    {
-        "id": 1,
-        "button": {
-            "size": [100, 100],
-            "position": [10, 10]
-        }
-    }
-    "#;
-
-    let descriptor: Descriptor = serde_json::from_str(serialized).unwrap();
-    println!("{:?}", descriptor);
+#[macro_export]
+macro_rules! button {
+    ($size_x: expr, $size_y: expr, $position_x: expr, $position_y: expr) => {{
+        ButtonBundle::from(ButtonDescriptor {
+            size: Vec2::new($size_x, $size_y),
+            position: Vec2::new($position_x, $position_y),
+        })
+    }};
 }

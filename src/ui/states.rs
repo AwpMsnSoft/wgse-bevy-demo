@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct UIForStat(pub Vec<UIState>);
+pub struct UIForStat(pub Vec<UiState>);
 
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub enum MainTitleState {
@@ -25,33 +25,33 @@ pub enum ExtraTitleState {
 }
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
-pub enum UIState {
+pub enum UiState {
     MainTitleState(MainTitleState),
     StartTitleState(StartTitleState),
     ConfigTitleState(ConfigTitleState),
     ExtraTitleState(ExtraTitleState),
 }
 
-impl From<MainTitleState> for UIState {
+impl From<MainTitleState> for UiState {
     fn from(state: MainTitleState) -> Self {
-        UIState::MainTitleState(state)
+        UiState::MainTitleState(state)
     }
 }
 
-impl From<StartTitleState> for UIState {
+impl From<StartTitleState> for UiState {
     fn from(state: StartTitleState) -> Self {
-        UIState::StartTitleState(state)
+        UiState::StartTitleState(state)
     }
 }
 
-impl From<ConfigTitleState> for UIState {
+impl From<ConfigTitleState> for UiState {
     fn from(state: ConfigTitleState) -> Self {
-        UIState::ConfigTitleState(state)
+        UiState::ConfigTitleState(state)
     }
 }
 
-impl From<ExtraTitleState> for UIState {
+impl From<ExtraTitleState> for UiState {
     fn from(state: ExtraTitleState) -> Self {
-        UIState::ExtraTitleState(state)
+        UiState::ExtraTitleState(state)
     }
 }

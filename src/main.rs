@@ -36,7 +36,7 @@ fn main() {
         })
         .add_startup_system(|windows: Res<Windows>| {
             info!("Game initializing...");
-            info!("Create window: {:?}", windows.get_primary().unwrap());
+            debug!("Create window: {:?}", windows.get_primary().unwrap());
         })
         .add_plugins(DefaultPlugins)
         .add_plugin(ui::main::UIPlugin)
@@ -46,7 +46,5 @@ fn main() {
 
 fn setup(mut command: Commands, asset_server: Res<AssetServer>) {
     command.spawn_bundle(UiCameraBundle::default());
-    // command.insert_resource(ui::resources::MainTitleRes::new(&asset_server));
-    // command.insert_resource(ui::resources::ExtraTitleRes::new(&asset_server));
     command.insert_resource(ui::resources::UiImageResources::new(&asset_server));
 }

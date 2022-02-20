@@ -1,4 +1,4 @@
-use super::widget::WidgetID;
+use super::descriptors::WidgetID;
 use bevy::prelude::*;
 use std::collections::HashMap;
 
