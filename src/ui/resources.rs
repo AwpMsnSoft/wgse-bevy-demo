@@ -1,5 +1,6 @@
 use super::widget::WidgetID;
 use bevy::prelude::*;
+use std::collections::HashMap;
 
 pub const MAIN_TITLE_BG_IMAGE: &str = "pictures/title_sel0.png";
 pub const START_BUTTON_HOVER_IMAGE: &str = "pictures/button/start_button_hovered.png";
@@ -25,46 +26,38 @@ pub const MUSIC_BUTTON_GUID: WidgetID = WidgetID(10202);
 pub const SCENE_BUTTON_GUID: WidgetID = WidgetID(10203);
 pub const BACK_BUTTON_GUID: WidgetID = WidgetID(10204);
 
-#[derive(Debug)]
-pub struct MainTitleRes {
-    pub bg_image: Handle<Image>,
-    pub start_button_hover_image: Handle<Image>,
-    pub config_button_hover_image: Handle<Image>,
-    pub extra_button_hover_image: Handle<Image>,
-    pub exit_button_hover_image: Handle<Image>,
-}
+#[derive(Component, Debug)]
+pub struct UiImageResources(pub HashMap<WidgetID, Handle<Image>>);
 
-impl MainTitleRes {
+impl UiImageResources {
     pub fn new(asset_server: &AssetServer) -> Self {
-        info!("ui/title resources loaded.");
-        Self {
-            bg_image: asset_server.load(MAIN_TITLE_BG_IMAGE),
-            start_button_hover_image: asset_server.load(START_BUTTON_HOVER_IMAGE),
-            config_button_hover_image: asset_server.load(CONFIG_BUTTON_HOVER_IMAGE),
-            extra_button_hover_image: asset_server.load(EXTRA_BUTTON_HOVER_IMAGE),
-            exit_button_hover_image: asset_server.load(EXIT_BUTTON_HOVER_IMAGE),
-        }
-    }
-}
-
-#[derive(Debug)]
-pub struct ExtraTitleRes {
-    pub bg_image: Handle<Image>,
-    pub cg_button_hover_image: Handle<Image>,
-    pub scene_button_hover_image: Handle<Image>,
-    pub music_button_hover_image: Handle<Image>,
-    pub back_button_hover_image: Handle<Image>,
-}
-
-impl ExtraTitleRes {
-    pub fn new(asset_server: &AssetServer) -> Self {
-        info!("ui/extra resources loaded.");
-        Self {
-            bg_image: asset_server.load(EXTRA_TILTE_BG_IAMGE),
-            cg_button_hover_image: asset_server.load(CG_BUTTON_HOVER_IMAGE),
-            scene_button_hover_image: asset_server.load(SCENE_BUTTON_HOVER_IMAGE),
-            music_button_hover_image: asset_server.load(MUSIC_BUTTON_HOVER_IMAGE),
-            back_button_hover_image: asset_server.load(BACK_BUTTON_HOVER_IMAGE),
-        }
+        debug!("Entering UiImageResources::new(), all images will be loaded.");
+        let mut image_map = HashMap::new();
+        image_map.insert(MAIN_TITLE_BG_GUID, asset_server.load(MAIN_TITLE_BG_IMAGE));
+        image_map.insert(
+            START_BUTTON_GUID,
+            asset_server.load(START_BUTTON_HOVER_IMAGE),
+        );
+        image_map.insert(
+            CONFIG_BUTTON_GUID,
+            asset_server.load(CONFIG_BUTTON_HOVER_IMAGE),
+        );
+        image_map.insert(
+            EXTRA_BUTTON_GUID,
+            asset_server.load(EXTRA_BUTTON_HOVER_IMAGE),
+        );
+        image_map.insert(EXIT_BUTTON_GUID, asset_server.load(EXIT_BUTTON_HOVER_IMAGE));
+        image_map.insert(EXTRA_TITLE_BG_GUID, asset_server.load(EXTRA_TILTE_BG_IAMGE));
+        image_map.insert(CG_BUTTON_GUID, asset_server.load(CG_BUTTON_HOVER_IMAGE));
+        image_map.insert(
+            MUSIC_BUTTON_GUID,
+            asset_server.load(MUSIC_BUTTON_HOVER_IMAGE),
+        );
+        image_map.insert(
+            SCENE_BUTTON_GUID,
+            asset_server.load(SCENE_BUTTON_HOVER_IMAGE),
+        );
+        image_map.insert(BACK_BUTTON_GUID, asset_server.load(BACK_BUTTON_HOVER_IMAGE));
+        UiImageResources(image_map)
     }
 }

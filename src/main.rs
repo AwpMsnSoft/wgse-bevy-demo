@@ -1,6 +1,7 @@
 // #![windows_subsystem = "windows"]
 use bevy::log::{Level, LogSettings};
 use bevy::prelude::*;
+use bevy::render::options::{Backends, WgpuOptions};
 use bevy::*;
 
 pub(crate) mod cg;
@@ -25,6 +26,10 @@ fn main() {
             }
         })
         .insert_resource(ClearColor(Color::rgb_u8(255, 255, 255)))
+        .insert_resource(WgpuOptions {
+            backends: Some(Backends::DX12),
+            ..Default::default()
+        })
         .insert_resource(LogSettings {
             level: Level::DEBUG,
             filter: String::from("wgpu=error,bevy_render=info,naga=info"),
@@ -41,6 +46,7 @@ fn main() {
 
 fn setup(mut command: Commands, asset_server: Res<AssetServer>) {
     command.spawn_bundle(UiCameraBundle::default());
-    command.insert_resource(ui::resources::MainTitleRes::new(&asset_server));
-    command.insert_resource(ui::resources::ExtraTitleRes::new(&asset_server));
+    // command.insert_resource(ui::resources::MainTitleRes::new(&asset_server));
+    // command.insert_resource(ui::resources::ExtraTitleRes::new(&asset_server));
+    command.insert_resource(ui::resources::UiImageResources::new(&asset_server));
 }

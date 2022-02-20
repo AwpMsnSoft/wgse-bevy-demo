@@ -1,6 +1,6 @@
 use super::{
     states::{MainTitleState, UIState},
-    ui::{extra_title_despawn, extra_title_spawn, main_title_despawn, main_title_spawn},
+    ui::{extra_title_despawn, extra_title_spawn, main_title_despawn, main_title_spawn, title_load_images},
 };
 use crate::system::buttons::{
     back_button_event, cg_button_event, config_button_event, exit_button_event, extra_button_event,
@@ -20,6 +20,10 @@ impl Plugin for UIPlugin {
                     .with_system(main_title_spawn)
             )
             .add_system_set(
+                SystemSet::on_update(UIState::from(MainTitleState::Main))
+                    .with_system(title_load_images)
+            )
+            .add_system_set(
                 SystemSet::on_exit(UIState::from(MainTitleState::Main))
                     .with_system(main_title_despawn),
             )
@@ -34,6 +38,10 @@ impl Plugin for UIPlugin {
             .add_system_set(
                 SystemSet::on_enter(UIState::from(MainTitleState::Extra))
                     .with_system(extra_title_spawn)
+            )
+            .add_system_set(
+                SystemSet::on_update(UIState::from(MainTitleState::Extra))
+                    .with_system(title_load_images),
             )
             .add_system_set(
                 SystemSet::on_exit(UIState::from(MainTitleState::Extra))

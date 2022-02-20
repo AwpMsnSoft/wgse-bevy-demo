@@ -1,8 +1,4 @@
-use super::{
-    resources::{ExtraTitleRes, MainTitleRes},
-    states::UIState,
-    widget::WidgetID,
-};
+use super::{resources::UiImageResources, states::UIState, widget::WidgetID};
 use crate::ui::{
     resources::{
         BACK_BUTTON_GUID, CG_BUTTON_GUID, CONFIG_BUTTON_GUID, EXIT_BUTTON_GUID, EXTRA_BUTTON_GUID,
@@ -13,11 +9,12 @@ use crate::ui::{
     widget::WidgetBundle,
 };
 use bevy::prelude::*;
+use std::sync::Once;
 
 pub fn main_title_spawn(
     mut commands: Commands,
     windows: Res<Windows>,
-    main_title_res: Res<MainTitleRes>,
+    // main_title_res: Res<MainTitleRes>,
 ) {
     debug!("Enter main_title_spawn.");
     let windows = windows.get_primary().unwrap();
@@ -34,7 +31,7 @@ pub fn main_title_spawn(
                     position_type: PositionType::Absolute,
                     ..Default::default()
                 },
-                image: main_title_res.bg_image.clone().into(),
+                // image: main_title_res.bg_image.clone().into(),
                 ..Default::default()
             },
         })
@@ -58,7 +55,7 @@ pub fn main_title_spawn(
                         ..Default::default()
                     },
                     visibility: Visibility { is_visible: false },
-                    image: main_title_res.start_button_hover_image.clone().into(),
+                    // image: main_title_res.start_button_hover_image.clone().into(),
                     ..Default::default()
                 },
             });
@@ -81,7 +78,7 @@ pub fn main_title_spawn(
                         ..Default::default()
                     },
                     visibility: Visibility { is_visible: false },
-                    image: main_title_res.config_button_hover_image.clone().into(),
+                    // image: main_title_res.config_button_hover_image.clone().into(),
                     ..Default::default()
                 },
             });
@@ -104,7 +101,7 @@ pub fn main_title_spawn(
                         ..Default::default()
                     },
                     visibility: Visibility { is_visible: false },
-                    image: main_title_res.extra_button_hover_image.clone().into(),
+                    // image: main_title_res.extra_button_hover_image.clone().into(),
                     ..Default::default()
                 },
             });
@@ -127,7 +124,7 @@ pub fn main_title_spawn(
                         ..Default::default()
                     },
                     visibility: Visibility { is_visible: false },
-                    image: main_title_res.exit_button_hover_image.clone().into(),
+                    // image: main_title_res.exit_button_hover_image.clone().into(),
                     ..Default::default()
                 },
             });
@@ -155,7 +152,7 @@ pub fn main_title_despawn(
 pub fn extra_title_spawn(
     mut commands: Commands,
     windows: Res<Windows>,
-    extra_title_res: Res<ExtraTitleRes>,
+    // extra_title_res: Res<ExtraTitleRes>,
 ) {
     debug!("Enter extra_title_spawn.");
     let windows = windows.get_primary().unwrap();
@@ -172,7 +169,7 @@ pub fn extra_title_spawn(
                     position_type: PositionType::Absolute,
                     ..Default::default()
                 },
-                image: extra_title_res.bg_image.clone().into(),
+                // image: extra_title_res.bg_image.clone().into(),
                 ..Default::default()
             },
         })
@@ -196,7 +193,7 @@ pub fn extra_title_spawn(
                         ..Default::default()
                     },
                     visibility: Visibility { is_visible: false },
-                    image: extra_title_res.cg_button_hover_image.clone().into(),
+                    // image: extra_title_res.cg_button_hover_image.clone().into(),
                     ..Default::default()
                 },
             });
@@ -219,7 +216,7 @@ pub fn extra_title_spawn(
                         ..Default::default()
                     },
                     visibility: Visibility { is_visible: false },
-                    image: extra_title_res.scene_button_hover_image.clone().into(),
+                    // image: extra_title_res.scene_button_hover_image.clone().into(),
                     ..Default::default()
                 },
             });
@@ -242,7 +239,7 @@ pub fn extra_title_spawn(
                         ..Default::default()
                     },
                     visibility: Visibility { is_visible: false },
-                    image: extra_title_res.music_button_hover_image.clone().into(),
+                    // image: extra_title_res.music_button_hover_image.clone().into(),
                     ..Default::default()
                 },
             });
@@ -265,7 +262,7 @@ pub fn extra_title_spawn(
                         ..Default::default()
                     },
                     visibility: Visibility { is_visible: false },
-                    image: extra_title_res.back_button_hover_image.clone().into(),
+                    // image: extra_title_res.back_button_hover_image.clone().into(),
                     ..Default::default()
                 },
             });
@@ -288,4 +285,24 @@ pub fn extra_title_despawn(
             commands.entity(entity).despawn();
         }
     }
+}
+
+pub fn title_load_images(
+    mut widgets_query: Query<(&WidgetID, &mut UiImage, &mut Visibility)>,
+    res: Res<UiImageResources>,
+) {
+    // static ONCE: Once = Once::new();
+    // ONCE.call_once(|| {
+        debug!("Enter main_title_load_images. which image to load?");
+        for (id, mut image, mut visibility) in widgets_query.iter_mut() {
+            if id == &MAIN_TITLE_BG_GUID || id == &EXTRA_TITLE_BG_GUID {
+                visibility.is_visible = true;
+            }
+            *image = res.0.get(id).unwrap().clone().into();
+            debug!(
+                "load id: {:?}, image: {:?}, visibility: {:?}",
+                id, image, visibility
+            );
+        }
+    // })
 }
