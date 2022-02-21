@@ -1,21 +1,21 @@
 use super::{
     states::{MainTitleState, UiState},
     ui::{
-        extra_title_despawn, extra_title_show, extra_title_spawn, main_title_despawn,
-        main_title_show, main_title_spawn, title_load_images,
+        extra_title_despawn, extra_title_spawn, main_title_despawn, main_title_spawn,
+        title_load_images,
     },
 };
 use crate::system::buttons::ui_button_event;
 use bevy::prelude::*;
 
-#[derive(Debug, Default, Clone, Hash, PartialEq, Eq, SystemLabel)]
-pub struct UiLabel(pub String);
+// #[derive(Debug, Default, Clone, Hash, PartialEq, Eq, SystemLabel)]
+// pub struct UiLabel(pub String);
 
-macro_rules! label {
-    ($s: expr) => {{
-        UiLabel($s.to_string())
-    }};
-}
+// macro_rules! label {
+//     ($s: expr) => {{
+//         UiLabel($s.to_string())
+//     }};
+// }
 
 #[derive(Debug)]
 pub struct UIPlugin;
@@ -26,12 +26,7 @@ impl Plugin for UIPlugin {
             // main title ui
             .add_system_set(
                 SystemSet::on_enter(UiState::from(MainTitleState::Main))
-                    .with_system(main_title_spawn.label(label!("ui/title/main/spawn")))
-                    .with_system(
-                        main_title_show
-                            .label(label!("ui/title/main/show"))
-                            .after(label!("ui/title/main/spawn")),
-                    ),
+                    .with_system(main_title_spawn),
             )
             .add_system_set(
                 SystemSet::on_exit(UiState::from(MainTitleState::Main))
@@ -40,12 +35,7 @@ impl Plugin for UIPlugin {
             // extra title ui
             .add_system_set(
                 SystemSet::on_enter(UiState::from(MainTitleState::Extra))
-                    .with_system(extra_title_spawn.label(label!("ui/title/extra/spawn")))
-                    .with_system(
-                        extra_title_show
-                            .label(label!("ui/title/extra/show"))
-                            .after(label!("ui/title/extra/spawn")),
-                    ),
+                    .with_system(extra_title_spawn),
             )
             .add_system_set(
                 SystemSet::on_exit(UiState::from(MainTitleState::Extra))
@@ -54,9 +44,7 @@ impl Plugin for UIPlugin {
             .add_system_set(
                 SystemSet::new()
                     .with_system(title_load_images)
-                    .with_system(ui_button_event)
-                    .with_system(main_title_show)
-                    .with_system(extra_title_show),
+                    .with_system(ui_button_event),
             );
     }
 }

@@ -31,7 +31,7 @@ pub struct Descriptor {
 #[allow(non_camel_case_types)]
 pub enum WidgetDescriptor {
     button(ButtonDescriptor),
-    // group(Vec<Descriptor>),
+    group(Vec<Descriptor>),
 }
 
 #[derive(Debug, Serialize, Deserialize, Component)]
@@ -70,5 +70,56 @@ macro_rules! button {
             size: Vec2::new($size_x, $size_y),
             position: Vec2::new($position_x, $position_y),
         })
+    }};
+}
+
+#[derive(Default, Debug, Serialize, Deserialize, Component)]
+pub struct ImageDescriptor {
+    pub size: Vec2,
+    pub position: Vec2,
+    #[serde(default)]
+    pub rotation: f32,
+    #[serde(default)]
+    pub scale: Vec2,
+    pub image: String,
+}
+
+impl ImageDescriptor {
+    pub fn load(self, asset_server: &AssetServer) -> ImageBundle {
+        ImageBundle {
+            style: Style {
+                size: Size {
+                    width: Val::Px(self.size.x),
+                    height: Val::Px(self.size.y),
+                },
+                position_type: PositionType::Absolute,
+                position: Rect {
+                    left: Val::Px(self.position.x),
+                    right: Val::Px(self.position.x + self.size.x),
+                    top: Val::Px(self.position.y),
+                    bottom: Val::Px(self.position.y - self.size.y),
+                },
+                ..Default::default()
+            },
+            transform: Transform {
+                rotation: Quat::from_rotation_z(self.rotation),
+                scale: Vec3::new(1.0 - self.scale.x, 1.0 - self.scale.y, 1.0),
+                ..Default::default()
+            },
+            image: asset_server.load(&self.image).into(),
+            ..Default::default()
+        }
+    }
+}
+
+#[macro_export]
+macro_rules! image {
+    ($size_x: expr, $size_y: expr, $position_x: expr, $position_y: expr, $image: expr) => {{
+        ImageDescriptor {
+            size: Vec2::new($size_x, $size_y),
+            position: Vec2::new($position_x, $position_y),
+            image: String::from($image),
+            ..Default::default()
+        }
     }};
 }
