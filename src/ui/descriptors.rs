@@ -32,6 +32,7 @@ pub struct Descriptor {
 pub enum WidgetDescriptor {
     button(ButtonDescriptor),
     group(Vec<Descriptor>),
+    image(ImageDescriptor),
 }
 
 #[derive(Debug, Serialize, Deserialize, Component)]
@@ -73,6 +74,15 @@ macro_rules! button {
     }};
 }
 
+#[derive(Debug, Serialize, Deserialize, Component)]
+pub struct Scale2D(pub Vec2);
+
+impl Default for Scale2D {
+    fn default() -> Self {
+        Scale2D(Vec2::new(1.0, 1.0))
+    }
+}
+
 #[derive(Default, Debug, Serialize, Deserialize, Component)]
 pub struct ImageDescriptor {
     pub size: Vec2,
@@ -80,7 +90,7 @@ pub struct ImageDescriptor {
     #[serde(default)]
     pub rotation: f32,
     #[serde(default)]
-    pub scale: Vec2,
+    pub scale: Scale2D,
     pub image: String,
 }
 
@@ -103,7 +113,7 @@ impl ImageDescriptor {
             },
             transform: Transform {
                 rotation: Quat::from_rotation_z(self.rotation),
-                scale: Vec3::new(1.0 - self.scale.x, 1.0 - self.scale.y, 1.0),
+                scale: Vec3::new(self.scale.0.x, self.scale.0.y, 1.0),
                 ..Default::default()
             },
             image: asset_server.load(&self.image).into(),
@@ -122,4 +132,14 @@ macro_rules! image {
             ..Default::default()
         }
     }};
+}
+
+#[test]
+fn test_image_serialization() {
+    let image = Descriptor {
+        id: 0,
+        content: WidgetDescriptor::image(image!(100.0, 100.0, 0.0, 0.0, "test.png")),
+    };
+    let serialized = serde_json::to_string(&image).unwrap();
+    println!("{}", serialized);
 }
