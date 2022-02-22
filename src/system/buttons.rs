@@ -4,7 +4,7 @@ use crate::ui::{
         MUSIC_BUTTON_GUID, SCENE_BUTTON_GUID, START_BUTTON_GUID,
     },
     states::{ExtraTitleState, MainTitleState, UiState},
-    descriptors::WidgetID,
+    descriptors::WidgetId,
 };
 use bevy::{app::AppExit, prelude::*};
 use lazy_static::lazy_static;
@@ -27,7 +27,7 @@ impl From<(UiState, Option<UiState>)> for UiButtonState {
 
 // This struct is used to store the state transition of the buttons.
 lazy_static! {
-    static ref UI_BUTTON_STATE_MAP: HashMap<WidgetID, UiButtonState> = {
+    static ref UI_BUTTON_STATE_MAP: HashMap<WidgetId, UiButtonState> = {
         let mut map = HashMap::new();
         map.insert(
             START_BUTTON_GUID,
@@ -86,8 +86,9 @@ lazy_static! {
     };
 }
 
+// TODO: UI 界面的前两个按钮似乎失效了
 pub fn ui_button_event(
-    mut interaction_query: Query<(&Interaction, &mut Visibility, &WidgetID), Changed<Interaction>>,
+    mut interaction_query: Query<(&Interaction, &mut Visibility, &WidgetId), Changed<Interaction>>,
     mut ui_state: ResMut<State<UiState>>,
     mut app_exit_event: EventWriter<AppExit>,
 ) {

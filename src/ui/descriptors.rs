@@ -1,12 +1,14 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize, Component, PartialEq, Eq, Hash)]
-pub struct WidgetID(pub i32);
+use super::resources::UiImageResources;
 
-impl Default for WidgetID {
+#[derive(Debug, Serialize, Deserialize, Component, PartialEq, Eq, Hash)]
+pub struct WidgetId(pub i32);
+
+impl Default for WidgetId {
     fn default() -> Self {
-        WidgetID(0)
+        WidgetId(0)
     }
 }
 
@@ -15,19 +17,29 @@ pub struct WidgetBundle<SubBundle>
 where
     SubBundle: Send + Sync + 'static + Bundle,
 {
-    pub id: WidgetID,
+    pub id: WidgetId,
     #[bundle]
     pub children: SubBundle,
 }
 
-#[derive(Debug, Serialize, Deserialize, Component)]
+#[derive(Debug, Clone, Serialize, Deserialize, Component)]
 pub struct Descriptor {
     pub id: i32,
     #[serde(flatten)]
     pub content: WidgetDescriptor,
 }
 
-#[derive(Debug, Serialize, Deserialize, Component)]
+#[macro_export]
+macro_rules! descriptor {
+    ($id: expr, $content: expr) => {{
+        Descriptor {
+            id: $id,
+            content: $content,
+        }
+    }};
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Component)]
 #[allow(non_camel_case_types)]
 pub enum WidgetDescriptor {
     button(ButtonDescriptor),
@@ -35,7 +47,7 @@ pub enum WidgetDescriptor {
     image(ImageDescriptor),
 }
 
-#[derive(Debug, Serialize, Deserialize, Component)]
+#[derive(Debug, Clone, Serialize, Deserialize, Component)]
 pub struct ButtonDescriptor {
     pub size: Vec2,
     pub position: Vec2,
@@ -67,14 +79,14 @@ impl From<ButtonDescriptor> for ButtonBundle {
 #[macro_export]
 macro_rules! button {
     ($size_x: expr, $size_y: expr, $position_x: expr, $position_y: expr) => {{
-        ButtonBundle::from(ButtonDescriptor {
+        ButtonDescriptor {
             size: Vec2::new($size_x, $size_y),
             position: Vec2::new($position_x, $position_y),
-        })
+        }
     }};
 }
 
-#[derive(Debug, Serialize, Deserialize, Component)]
+#[derive(Debug, Clone, Serialize, Deserialize, Component)]
 pub struct Scale2D(pub Vec2);
 
 impl Default for Scale2D {
@@ -83,7 +95,7 @@ impl Default for Scale2D {
     }
 }
 
-#[derive(Default, Debug, Serialize, Deserialize, Component)]
+#[derive(Default, Clone, Debug, Serialize, Deserialize, Component)]
 pub struct ImageDescriptor {
     pub size: Vec2,
     pub position: Vec2,
@@ -95,7 +107,7 @@ pub struct ImageDescriptor {
 }
 
 impl ImageDescriptor {
-    pub fn load(self, asset_server: &AssetServer) -> ImageBundle {
+    pub fn load_resources(self, resources: &Res<UiImageResources>) -> ImageBundle {
         ImageBundle {
             style: Style {
                 size: Size {
@@ -116,7 +128,7 @@ impl ImageDescriptor {
                 scale: Vec3::new(self.scale.0.x, self.scale.0.y, 1.0),
                 ..Default::default()
             },
-            image: asset_server.load(&self.image).into(),
+            image: resources.0.get(self.image.as_str()).unwrap().clone().into(),
             ..Default::default()
         }
     }

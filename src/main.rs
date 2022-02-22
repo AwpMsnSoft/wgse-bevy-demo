@@ -3,6 +3,7 @@ use bevy::log::{Level, LogSettings};
 use bevy::prelude::*;
 use bevy::render::options::{Backends, WgpuOptions};
 use bevy::*;
+use ui::ui::{WINDOW_WIDTH, WINDOW_HEIGHT};
 
 pub(crate) mod cg;
 pub(crate) mod media;
@@ -16,8 +17,8 @@ fn main() {
         .insert_resource({
             WindowDescriptor {
                 title: String::from("dokoiku HD"),
-                width: 800.0,
-                height: 600.0,
+                width: WINDOW_WIDTH,
+                height: WINDOW_HEIGHT,
                 scale_factor_override: Some(1.0),
                 vsync: true,
                 resizable: false,

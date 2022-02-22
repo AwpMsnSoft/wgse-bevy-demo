@@ -1,12 +1,16 @@
+use std::collections::HashMap;
+
 use super::{
+    descriptors::Descriptor,
+    resources::{UiImageResources, EXTRA_TITLE_RES_MAP, MAIN_TITLE_RES_MAP},
     states::{MainTitleState, UiState},
-    ui::{
-        extra_title_despawn, extra_title_spawn, main_title_despawn, main_title_spawn,
-        title_load_images,
-    },
+    ui::{EXTRA_TITLE_LAYOUT, MAIN_TITLE_LAYOUT},
 };
-use crate::system::buttons::ui_button_event;
-use bevy::prelude::*;
+use crate::{
+    system::buttons::ui_button_event,
+    ui::descriptors::{WidgetBundle, WidgetDescriptor, WidgetId},
+};
+use bevy::{prelude::*, render::texture::DEFAULT_IMAGE_HANDLE};
 
 // #[derive(Debug, Default, Clone, Hash, PartialEq, Eq, SystemLabel)]
 // pub struct UiLabel(pub String);
@@ -26,25 +30,79 @@ impl Plugin for UIPlugin {
             // main title ui
             .add_system_set(
                 SystemSet::on_enter(UiState::from(MainTitleState::Main))
-                    .with_system(main_title_spawn),
+                    .with_system(title_spawn_curried(&*MAIN_TITLE_LAYOUT)),
+            )
+            .add_system_set(
+                SystemSet::on_update(UiState::from(MainTitleState::Main))
+                    .with_system(title_load_images_curried(&*MAIN_TITLE_RES_MAP)),
             )
             .add_system_set(
                 SystemSet::on_exit(UiState::from(MainTitleState::Main))
-                    .with_system(main_title_despawn),
+                    .with_system(title_despawn_curried(&*MAIN_TITLE_RES_MAP)),
             )
             // extra title ui
             .add_system_set(
                 SystemSet::on_enter(UiState::from(MainTitleState::Extra))
-                    .with_system(extra_title_spawn),
+                    .with_system(title_spawn_curried(&*EXTRA_TITLE_LAYOUT)),
+            )
+            .add_system_set(
+                SystemSet::on_update(UiState::from(MainTitleState::Extra))
+                    .with_system(title_load_images_curried(&*EXTRA_TITLE_RES_MAP)),
             )
             .add_system_set(
                 SystemSet::on_exit(UiState::from(MainTitleState::Extra))
-                    .with_system(extra_title_despawn),
+                    .with_system(title_despawn_curried(&*EXTRA_TITLE_RES_MAP)),
             )
             .add_system_set(
-                SystemSet::new()
-                    .with_system(title_load_images)
-                    .with_system(ui_button_event),
+                SystemSet::new().with_system(ui_button_event),
             );
+    }
+}
+
+pub fn title_spawn_curried(
+    layout: &'static Vec<Descriptor>,
+) -> impl Fn(Commands, Res<State<UiState>>, Res<UiImageResources>) {
+    move |mut commands, ui_state, resources| {
+        debug!("Spawning title. current state: {:?}", ui_state.current());
+        for descriptor in layout.iter() {
+            match &descriptor.content {
+                WidgetDescriptor::button(button) => commands.spawn_bundle(WidgetBundle {
+                    id: WidgetId(descriptor.id),
+                    children: ButtonBundle::from(button.clone()),
+                }),
+                WidgetDescriptor::image(image) => commands.spawn_bundle(WidgetBundle {
+                    id: WidgetId(descriptor.id),
+                    children: image.clone().load_resources(&resources),
+                }),
+                _ => panic!("Current WidgetDescriptor is not supported."),
+            };
+        }
+    }
+}
+
+pub fn title_despawn_curried(
+    res_map: &'static HashMap<WidgetId, &'static str>,
+) -> impl Fn(Commands, Res<State<UiState>>, Query<(Entity, &WidgetId)>) {
+    move |mut commands, ui_state, query| {
+        debug!("Despawning title. current state: {:?}", ui_state.current());
+        for (entity, widget_id) in query.iter() {
+            if res_map.contains_key(&widget_id) {
+                debug!("Despawning entity {:?}", entity);
+                commands.entity(entity).despawn_recursive();
+            }
+        }
+    }
+}
+
+pub fn title_load_images_curried(
+    res_map: &'static HashMap<WidgetId, &'static str>,
+) -> impl Fn(Query<(&WidgetId, &mut UiImage)>, Res<UiImageResources>) {
+    move |mut widgets_query, res| {
+        for (id, mut image) in widgets_query.iter_mut() {
+            if image.0 == DEFAULT_IMAGE_HANDLE.typed() {
+                debug!("Loading image for widget {:?}", id);
+                *image = res.0.get(res_map.get(&id).unwrap()).unwrap().clone().into();
+            }
+        }
     }
 }
