@@ -1,87 +1,21 @@
 use crate::ui::{
-    resources::{
-        BACK_BUTTON_GUID, CG_BUTTON_GUID, CONFIG_BUTTON_GUID, EXIT_BUTTON_GUID, EXTRA_BUTTON_GUID,
-        MUSIC_BUTTON_GUID, SCENE_BUTTON_GUID, START_BUTTON_GUID,
-    },
-    states::{ExtraTitleState, MainTitleState, UiState},
     descriptors::WidgetId,
+    resources::EXIT_BUTTON_GUID,
+    states::{UiButtonState, UiState, TITLE_BUTTON_STATE_LIST},
 };
 use bevy::{app::AppExit, prelude::*};
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 
-#[derive(Debug)]
-struct UiButtonState {
-    pub current: UiState,
-    pub turning_into: Option<UiState>,
-}
-
-impl From<(UiState, Option<UiState>)> for UiButtonState {
-    fn from(state: (UiState, Option<UiState>)) -> Self {
-        UiButtonState {
-            current: state.0,
-            turning_into: state.1,
-        }
-    }
-}
-
 // This struct is used to store the state transition of the buttons.
 lazy_static! {
     static ref UI_BUTTON_STATE_MAP: HashMap<WidgetId, UiButtonState> = {
         let mut map = HashMap::new();
-        map.insert(
-            START_BUTTON_GUID,
-            UiButtonState::from((
-                MainTitleState::Main.into(),
-                Some(MainTitleState::Start.into()),
-            )),
-        );
-        map.insert(
-            CONFIG_BUTTON_GUID,
-            UiButtonState::from((
-                MainTitleState::Main.into(),
-                Some(MainTitleState::Config.into()),
-            )),
-        );
-        map.insert(
-            EXTRA_BUTTON_GUID,
-            UiButtonState::from((
-                MainTitleState::Main.into(),
-                Some(MainTitleState::Extra.into()),
-            )),
-        );
-        map.insert(
-            EXIT_BUTTON_GUID,
-            UiButtonState::from((MainTitleState::Main.into(), None)),
-        );
-        map.insert(
-            MUSIC_BUTTON_GUID,
-            UiButtonState::from((
-                MainTitleState::Extra.into(),
-                Some(ExtraTitleState::Music.into()),
-            )),
-        );
-        map.insert(
-            SCENE_BUTTON_GUID,
-            UiButtonState::from((
-                MainTitleState::Extra.into(),
-                Some(ExtraTitleState::Scene.into()),
-            )),
-        );
-        map.insert(
-            CG_BUTTON_GUID,
-            UiButtonState::from((
-                MainTitleState::Extra.into(),
-                Some(ExtraTitleState::Cg.into()),
-            )),
-        );
-        map.insert(
-            BACK_BUTTON_GUID,
-            UiButtonState::from((
-                MainTitleState::Extra.into(),
-                Some(MainTitleState::Main.into()),
-            )),
-        );
+        for list in TITLE_BUTTON_STATE_LIST.iter() {
+            for (widget_id, state) in list.iter() {
+                map.insert(widget_id.clone(), state.clone());
+            }
+        }
         map
     };
 }
@@ -111,6 +45,7 @@ pub fn ui_button_event(
                                 )
                             });
                         }
+                        // Exit button on main title screen, exit the app.
                         if widget_id == &EXIT_BUTTON_GUID {
                             info!("Exiting the game...");
                             app_exit_event.send(AppExit);

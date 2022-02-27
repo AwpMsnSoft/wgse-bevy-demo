@@ -52,14 +52,14 @@ pub enum WidgetDescriptor {
 pub fn widget_descriptor_spawn(parent: &mut ChildBuilder, descriptor: &Descriptor) {
     match &descriptor.content {
         WidgetDescriptor::button(button) => {
-            info!("Spawning button: {:?}", button);
+            debug!("Spawning button: {:?}", button);
             parent.spawn_bundle(WidgetBundle {
                 id: WidgetId(descriptor.id),
                 children: ButtonBundle::from(button.clone()),
             });
         }
         WidgetDescriptor::image(image) => {
-            info!("Spawning image: {:?}", image);
+            debug!("Spawning image: {:?}", image);
             parent.spawn_bundle(WidgetBundle {
                 id: WidgetId(descriptor.id),
                 children: ImageBundle::from(image.clone()),

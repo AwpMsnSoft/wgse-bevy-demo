@@ -8,7 +8,7 @@ use super::{
 };
 use crate::{
     system::buttons::ui_button_event,
-    ui::descriptors::{widget_descriptor_spawn, WidgetBundle, WidgetDescriptor, WidgetId},
+    ui::descriptors::{widget_descriptor_spawn, WidgetId},
 };
 use bevy::{prelude::*, render::texture::DEFAULT_IMAGE_HANDLE};
 
