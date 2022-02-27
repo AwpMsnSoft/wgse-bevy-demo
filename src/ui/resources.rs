@@ -3,6 +3,13 @@ use bevy::prelude::*;
 use std::collections::HashMap;
 use lazy_static::lazy_static;
 
+lazy_static! {
+    static ref UI_TITLE_RES_LIST: Vec<HashMap<WidgetId, &'static str>> = vec![
+        MAIN_TITLE_RES_MAP.clone(),
+        EXTRA_TITLE_RES_MAP.clone(),
+    ];
+}
+
 pub const MAIN_TITLE_BG_GUID: WidgetId = WidgetId(10100);
 pub const START_BUTTON_GUID: WidgetId = WidgetId(10101);
 pub const CONFIG_BUTTON_GUID: WidgetId = WidgetId(10102);
@@ -23,8 +30,8 @@ lazy_static! {
 
 pub const EXTRA_TITLE_BG_GUID: WidgetId = WidgetId(10200);
 pub const CG_BUTTON_GUID: WidgetId = WidgetId(10201);
-pub const MUSIC_BUTTON_GUID: WidgetId = WidgetId(10202);
-pub const SCENE_BUTTON_GUID: WidgetId = WidgetId(10203);
+pub const SCENE_BUTTON_GUID: WidgetId = WidgetId(10202);
+pub const MUSIC_BUTTON_GUID: WidgetId = WidgetId(10203);
 pub const BACK_BUTTON_GUID: WidgetId = WidgetId(10204);
 
 lazy_static! {
@@ -46,11 +53,10 @@ impl UiImageResources {
     pub fn new(asset_server: &AssetServer) -> Self {
         debug!("Entering UiImageResources::new(), all images will be loaded.");
         let mut image_map = HashMap::new();
-        for (_, &path) in MAIN_TITLE_RES_MAP.iter() {
-            image_map.insert(path, asset_server.load(path));
-        }
-        for (_, &path) in EXTRA_TITLE_RES_MAP.iter() {
-            image_map.insert(path, asset_server.load(path));
+        for res in UI_TITLE_RES_LIST.iter() {
+            for (_, &path) in res {
+                image_map.insert(path, asset_server.load(path));
+            }
         }
         UiImageResources(image_map)
     }

@@ -28,7 +28,7 @@ fn main() {
         })
         .insert_resource(ClearColor(Color::rgb_u8(255, 255, 255)))
         .insert_resource(WgpuOptions {
-            backends: Some(Backends::DX12),
+            backends: Some(Backends::PRIMARY),
             ..Default::default()
         })
         .insert_resource(LogSettings {

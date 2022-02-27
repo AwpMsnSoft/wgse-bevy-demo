@@ -1,9 +1,7 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use super::resources::UiImageResources;
-
-#[derive(Debug, Serialize, Deserialize, Component, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, Component, PartialEq, Eq, Hash)]
 pub struct WidgetId(pub i32);
 
 impl Default for WidgetId {
@@ -27,14 +25,17 @@ pub struct Descriptor {
     pub id: i32,
     #[serde(flatten)]
     pub content: WidgetDescriptor,
+    #[serde(default)]
+    pub children: Option<GroupDescriptor>,
 }
 
 #[macro_export]
 macro_rules! descriptor {
-    ($id: expr, $content: expr) => {{
+    ($id: expr, $content: expr, $children: expr) => {{
         Descriptor {
             id: $id,
             content: $content,
+            children: $children,
         }
     }};
 }
@@ -43,11 +44,33 @@ macro_rules! descriptor {
 #[allow(non_camel_case_types)]
 pub enum WidgetDescriptor {
     button(ButtonDescriptor),
-    group(Vec<Descriptor>),
     image(ImageDescriptor),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Component)]
+#[allow(unreachable_patterns)]
+// TODO: use a macro to generate this
+pub fn widget_descriptor_spawn(parent: &mut ChildBuilder, descriptor: &Descriptor) {
+    match &descriptor.content {
+        WidgetDescriptor::button(button) => {
+            info!("Spawning button: {:?}", button);
+            parent.spawn_bundle(WidgetBundle {
+                id: WidgetId(descriptor.id),
+                children: ButtonBundle::from(button.clone()),
+            });
+        }
+        WidgetDescriptor::image(image) => {
+            info!("Spawning image: {:?}", image);
+            parent.spawn_bundle(WidgetBundle {
+                id: WidgetId(descriptor.id),
+                children: ImageBundle::from(image.clone()),
+            });
+        }
+        #[allow(unreachable_patterns)]
+        _ => panic!("Current WidgetDescriptor is not supported yet."),
+    }
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Component)]
 pub struct ButtonDescriptor {
     pub size: Vec2,
     pub position: Vec2,
@@ -95,7 +118,7 @@ impl Default for Scale2D {
     }
 }
 
-#[derive(Default, Clone, Debug, Serialize, Deserialize, Component)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Component)]
 pub struct ImageDescriptor {
     pub size: Vec2,
     pub position: Vec2,
@@ -103,32 +126,30 @@ pub struct ImageDescriptor {
     pub rotation: f32,
     #[serde(default)]
     pub scale: Scale2D,
-    pub image: String,
 }
 
-impl ImageDescriptor {
-    pub fn load_resources(self, resources: &Res<UiImageResources>) -> ImageBundle {
-        ImageBundle {
+impl From<ImageDescriptor> for ImageBundle {
+    fn from(descriptor: ImageDescriptor) -> Self {
+        Self {
             style: Style {
                 size: Size {
-                    width: Val::Px(self.size.x),
-                    height: Val::Px(self.size.y),
+                    width: Val::Px(descriptor.size.x),
+                    height: Val::Px(descriptor.size.y),
                 },
                 position_type: PositionType::Absolute,
                 position: Rect {
-                    left: Val::Px(self.position.x),
-                    right: Val::Px(self.position.x + self.size.x),
-                    top: Val::Px(self.position.y),
-                    bottom: Val::Px(self.position.y - self.size.y),
+                    left: Val::Px(descriptor.position.x),
+                    right: Val::Px(descriptor.position.x + descriptor.size.x),
+                    top: Val::Px(descriptor.position.y),
+                    bottom: Val::Px(descriptor.position.y - descriptor.size.y),
                 },
                 ..Default::default()
             },
             transform: Transform {
-                rotation: Quat::from_rotation_z(self.rotation),
-                scale: Vec3::new(self.scale.0.x, self.scale.0.y, 1.0),
+                rotation: Quat::from_rotation_z(descriptor.rotation),
+                scale: Vec3::new(descriptor.scale.0.x, descriptor.scale.0.y, 1.0),
                 ..Default::default()
             },
-            image: resources.0.get(self.image.as_str()).unwrap().clone().into(),
             ..Default::default()
         }
     }
@@ -136,22 +157,32 @@ impl ImageDescriptor {
 
 #[macro_export]
 macro_rules! image {
-    ($size_x: expr, $size_y: expr, $position_x: expr, $position_y: expr, $image: expr) => {{
+    ($size_x: expr, $size_y: expr, $position_x: expr, $position_y: expr) => {{
         ImageDescriptor {
             size: Vec2::new($size_x, $size_y),
             position: Vec2::new($position_x, $position_y),
-            image: String::from($image),
             ..Default::default()
         }
     }};
 }
 
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Component)]
+pub struct GroupDescriptor(pub Vec<Descriptor>);
+
 #[test]
 fn test_image_serialization() {
     let image = Descriptor {
         id: 0,
-        content: WidgetDescriptor::image(image!(100.0, 100.0, 0.0, 0.0, "test.png")),
+        content: WidgetDescriptor::image(image!(100.0, 100.0, 0.0, 0.0)),
+        children: None,
     };
     let serialized = serde_json::to_string(&image).unwrap();
     println!("{}", serialized);
+}
+
+#[test]
+fn test_image_deserialization() {
+    let serialized = r#"{"id":0,"image":{"size":[100.0,100.0],"position":[0.0,0.0]}}"#;
+    let image = serde_json::from_str::<Descriptor>(serialized).unwrap();
+    println!("{:?}", image);
 }

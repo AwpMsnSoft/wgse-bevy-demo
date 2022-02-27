@@ -86,7 +86,6 @@ lazy_static! {
     };
 }
 
-// TODO: UI 界面的前两个按钮似乎失效了
 pub fn ui_button_event(
     mut interaction_query: Query<(&Interaction, &mut Visibility, &WidgetId), Changed<Interaction>>,
     mut ui_state: ResMut<State<UiState>>,
@@ -97,6 +96,7 @@ pub fn ui_button_event(
             if &button_state.current == ui_state.current() {
                 match interaction {
                     Interaction::Hovered => {
+                        debug!("Button {:?} is hovered", widget_id);
                         visibility.is_visible = true;
                     }
                     Interaction::None => {
