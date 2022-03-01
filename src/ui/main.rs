@@ -2,9 +2,14 @@ use std::collections::HashMap;
 
 use super::{
     descriptors::Descriptor,
-    resources::{UiImageResources, EXTRA_TITLE_RES_MAP, MAIN_TITLE_RES_MAP, CONFIG_SPEED_TITLE_RES_MAP},
-    states::{MainTitleState, UiState, MAIN_TITLE_BUTTON_STATE_MAP, EXTRA_TITLE_BUTTON_STATE_MAP, ConfigTitleState, CONFIG_SPEED_TITLE_BUTTON_STATE_MAP},
-    ui::{EXTRA_TITLE_LAYOUT, MAIN_TITLE_LAYOUT, CONFIG_SPEED_TITLE_LAYOUT},
+    resources::{
+        UiImageResources, CONFIG_SPEED_TITLE_RES_MAP, EXTRA_TITLE_RES_MAP, MAIN_TITLE_RES_MAP,
+    },
+    states::{
+        ConfigTitleState, MainTitleState, UiState, CONFIG_SPEED_TITLE_BUTTON_STATE_MAP,
+        EXTRA_TITLE_BUTTON_STATE_MAP, MAIN_TITLE_BUTTON_STATE_MAP,
+    },
+    ui::{CONFIG_SPEED_TITLE_LAYOUT, EXTRA_TITLE_LAYOUT, MAIN_TITLE_LAYOUT},
 };
 use crate::{
     system::buttons::{game_exit_button_event, ui_button_event_curried},
@@ -40,7 +45,7 @@ impl Plugin for UIPlugin {
             .add_system_set(
                 SystemSet::on_update(UiState::from(MainTitleState::Extra))
                     .with_system(title_load_images_curried(&*EXTRA_TITLE_RES_MAP))
-                    .with_system(ui_button_event_curried(&*EXTRA_TITLE_BUTTON_STATE_MAP))
+                    .with_system(ui_button_event_curried(&*EXTRA_TITLE_BUTTON_STATE_MAP)),
             )
             .add_system_set(
                 SystemSet::on_exit(UiState::from(MainTitleState::Extra))
@@ -54,7 +59,9 @@ impl Plugin for UIPlugin {
             .add_system_set(
                 SystemSet::on_update(UiState::from(ConfigTitleState::Speed))
                     .with_system(title_load_images_curried(&*CONFIG_SPEED_TITLE_RES_MAP))
-                    .with_system(ui_button_event_curried(&*CONFIG_SPEED_TITLE_BUTTON_STATE_MAP))
+                    .with_system(ui_button_event_curried(
+                        &*CONFIG_SPEED_TITLE_BUTTON_STATE_MAP,
+                    )),
             )
             .add_system_set(
                 SystemSet::on_exit(UiState::from(ConfigTitleState::Speed))

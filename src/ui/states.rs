@@ -1,11 +1,6 @@
 use crate::ui::{
     descriptors::WidgetId,
-    resources::{
-        CONFIG_SPEED_TITLE_SOUND_BUTTON_GUID, CONFIG_SPEED_TITLE_SPEED_BUTTON_GUID,
-        EXTRA_TITLE_BACK_BUTTON_GUID, EXTRA_TITLE_CG_BUTTON_GUID, EXTRA_TITLE_MUSIC_BUTTON_GUID,
-        EXTRA_TITLE_SCENE_BUTTON_GUID, MAIN_TITLE_CONFIG_BUTTON_GUID, MAIN_TITLE_EXIT_BUTTON_GUID,
-        MAIN_TITLE_EXTRA_BUTTON_GUID, MAIN_TITLE_START_BUTTON_GUID,
-    },
+    resources::*,
 };
 use bevy::prelude::*;
 use lazy_static::lazy_static;
@@ -18,7 +13,7 @@ pub struct UIForStat(pub Vec<UiState>);
 pub enum MainTitleState {
     Main,
     Start,
-    Config,
+    // Config,
     Extra,
 }
 
@@ -168,15 +163,32 @@ lazy_static! {
             )),
         );
         map.insert(
-            MAIN_TITLE_EXTRA_BUTTON_GUID,
+            CONFIG_SPEED_TITLE_EXTRA_BUTTON_GUID,
             UiButtonState::from((
                 ConfigTitleState::Speed.into(),
                 Some(ConfigTitleState::Extra.into()),
             )),
         );
         map.insert(
-            MAIN_TITLE_EXIT_BUTTON_GUID,
-            UiButtonState::from((ConfigTitleState::Speed.into(), None)),
+            CONFIG_SPEED_TITLE_BACK_BUTTON_GUID,
+            UiButtonState::from((
+                ConfigTitleState::Speed.into(),
+                Some(MainTitleState::Main.into()),
+            )),
+        );
+        map.insert(
+            CONFIG_SPEED_TITLE_SKIP_READED_ON_BUTTON_GUID,
+            UiButtonState::from((
+                ConfigTitleState::Speed.into(),
+                None
+            ))
+        );
+        map.insert(
+            CONFIG_SPEED_TITLE_SKIP_READED_OFF_BUTTON_GUID,
+            UiButtonState::from((
+                ConfigTitleState::Speed.into(),
+                None
+            ))
         );
         map
     };

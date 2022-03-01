@@ -4,15 +4,7 @@ use crate::{
         descriptors::{
             ButtonDescriptor, Descriptor, GroupDescriptor, ImageDescriptor, WidgetDescriptor,
         },
-        resources::{
-            CONFIG_SPEED_TITLE_BACK_BUTTON_GUID, CONFIG_SPEED_TITLE_BG_GUID,
-            CONFIG_SPEED_TITLE_EXTRA_BUTTON_GUID, CONFIG_SPEED_TITLE_SOUND_BUTTON_GUID,
-            CONFIG_SPEED_TITLE_SPEED_BUTTON_GUID, EXTRA_TITLE_BACK_BUTTON_GUID,
-            EXTRA_TITLE_BG_GUID, EXTRA_TITLE_CG_BUTTON_GUID, EXTRA_TITLE_MUSIC_BUTTON_GUID,
-            EXTRA_TITLE_SCENE_BUTTON_GUID, MAIN_TITLE_BG_GUID, MAIN_TITLE_CONFIG_BUTTON_GUID,
-            MAIN_TITLE_EXIT_BUTTON_GUID, MAIN_TITLE_EXTRA_BUTTON_GUID,
-            MAIN_TITLE_START_BUTTON_GUID,
-        },
+        resources::*,
     },
 };
 use bevy::prelude::*;
@@ -101,7 +93,17 @@ lazy_static! {
             ),
             descriptor!(
                 CONFIG_SPEED_TITLE_BACK_BUTTON_GUID.0,
-                WidgetDescriptor::button(button!(115.0, 48.0, 655.0, WINDOW_HEIGHT - 528.0)),
+                WidgetDescriptor::button(button!(115.0, 48.0, 665.0, WINDOW_HEIGHT - 528.0)),
+                None
+            ),
+            descriptor!(
+                CONFIG_SPEED_TITLE_SKIP_READED_ON_BUTTON_GUID.0,
+                WidgetDescriptor::button(button!(36.0, 19.0, 372.0, WINDOW_HEIGHT - 344.0)),
+                None
+            ),
+            descriptor!(
+                CONFIG_SPEED_TITLE_SKIP_READED_OFF_BUTTON_GUID.0,
+                WidgetDescriptor::button(button!(36.0, 24.0, 437.0, WINDOW_HEIGHT - 339.0)),
                 None
             )
         ]))
