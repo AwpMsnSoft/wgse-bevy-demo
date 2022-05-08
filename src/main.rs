@@ -1,9 +1,13 @@
-// #![windows_subsystem = "windows"]
+#![windows_subsystem = "windows"]
 use bevy::log::{Level, LogSettings};
 use bevy::prelude::*;
 use bevy::render::options::{Backends, WgpuOptions};
 use bevy::*;
-use ui::ui::{WINDOW_WIDTH, WINDOW_HEIGHT};
+use ui::ui::{WINDOW_HEIGHT, WINDOW_WIDTH};
+
+#[allow(unused_imports)]
+#[macro_use]
+extern crate generic_widget;
 
 pub(crate) mod cg;
 pub(crate) mod media;
@@ -12,7 +16,6 @@ pub(crate) mod system;
 pub(crate) mod text;
 pub(crate) mod ui;
 
-#[bevy_main]
 fn main() {
     App::new()
         .insert_resource({

@@ -6,9 +6,6 @@ use bevy::prelude::*;
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 
-#[derive(Component)]
-pub struct UIForStat(pub Vec<UiState>);
-
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub enum MainTitleState {
     Main,
@@ -34,7 +31,7 @@ pub enum ExtraTitleState {
     Music,
 }
 
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[derive(Component, Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub enum UiState {
     MainTitleState(MainTitleState),
     StartTitleState(StartTitleState),
