@@ -65,7 +65,6 @@ pub fn widget_descriptor_spawn(parent: &mut ChildBuilder, descriptor: &Descripto
                 children: ImageBundle::from(image.clone()),
             });
         }
-        #[allow(unreachable_patterns)]
         _ => panic!("Current WidgetDescriptor is not supported yet."),
     }
 }

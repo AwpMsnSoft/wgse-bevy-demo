@@ -12,6 +12,7 @@ pub(crate) mod system;
 pub(crate) mod text;
 pub(crate) mod ui;
 
+#[bevy_main]
 fn main() {
     App::new()
         .insert_resource({
