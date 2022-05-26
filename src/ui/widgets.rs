@@ -1,16 +1,25 @@
 use super::states::UiState;
 use bevy::prelude::*;
 
-#[derive(Debug, Default, Clone, Component, PartialEq, Eq, Hash)]
+#[derive(Debug, Default, Deref, Clone, Component, PartialEq, Eq, Hash)]
 pub struct WidgetId(pub i32);
 
-/// A button widget which:
-///     - unvisiable when `Interaction::None`
-///     - visible when `Interaction::Hover`
-///     - turning to `next_state` when `Interaction::Click`
+#[derive(Debug, Default, Deref, Clone, Component, PartialEq, Eq, Hash)]
+pub struct CString(pub String);
+
+#[derive(Debug, Default, Deref, Clone, Component, PartialEq, Eq, Hash)]
+pub struct CUiState(pub Option<UiState>);
+
+#[derive(Debug, Default, Clone, Component, PartialEq, Eq, Hash)]
+pub struct UiImage2 {
+    pub image0: Handle<Image>,
+    pub image1: Handle<Image>,
+}
+
 #[generic(Button)]
-#[derive(Bundle, Clone, Debug)]
+#[derive(Debug, Default, Bundle)]
 pub struct SingleButton {
-    /// the target state when clicked
-    pub next_state: UiState,
+    pub id: WidgetId,
+    pub next_state: CUiState,
+    pub images: UiImage2,
 }

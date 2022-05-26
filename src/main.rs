@@ -1,8 +1,8 @@
 #![windows_subsystem = "windows"]
 use bevy::log::{Level, LogSettings};
 use bevy::prelude::*;
-use bevy::render::options::{Backends, WgpuOptions};
 use bevy::*;
+use bevy::render::settings::{WgpuSettings, Backends};
 use ui::ui::{WINDOW_HEIGHT, WINDOW_WIDTH};
 
 #[allow(unused_imports)]
@@ -24,14 +24,13 @@ fn main() {
                 width: WINDOW_WIDTH,
                 height: WINDOW_HEIGHT,
                 scale_factor_override: Some(1.0),
-                vsync: true,
                 resizable: false,
                 mode: window::WindowMode::Windowed,
                 ..Default::default()
             }
         })
         .insert_resource(ClearColor(Color::rgb_u8(255, 255, 255)))
-        .insert_resource(WgpuOptions {
+        .insert_resource(WgpuSettings {
             backends: Some(Backends::PRIMARY),
             ..Default::default()
         })

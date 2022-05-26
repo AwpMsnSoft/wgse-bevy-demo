@@ -1,5 +1,5 @@
 [package]
-name = "MSEngineBevy"
+name = "wgse-bevy"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 generic_widget = { path = "./src/ui/generic_widget"}
-bevy = "0.6" # make sure this is the latest version
+bevy = "0.7.0" # make sure this is the latest version
 lazy_static = "1.4.0"
 static-rc = "0.5.0"
 ghost-cell = "0.2.2"
