@@ -1,8 +1,8 @@
 #![windows_subsystem = "windows"]
 use bevy::log::{Level, LogSettings};
 use bevy::prelude::*;
+use bevy::render::settings::{Backends, WgpuSettings};
 use bevy::*;
-use bevy::render::settings::{WgpuSettings, Backends};
 use ui::ui::{WINDOW_HEIGHT, WINDOW_WIDTH};
 
 #[allow(unused_imports)]
@@ -43,12 +43,12 @@ fn main() {
             debug!("Create window: {:?}", windows.get_primary().unwrap());
         })
         .add_plugins(DefaultPlugins)
-        .add_plugin(ui::main::UIPlugin)
+        // .add_plugin(ui::main::UIPlugin)
         .add_startup_system(setup)
         .run();
 }
 
 fn setup(mut command: Commands, asset_server: Res<AssetServer>) {
     command.spawn_bundle(UiCameraBundle::default());
-    command.insert_resource(ui::resources::UiImageResources::new(&asset_server));
+    // command.insert_resource(ui::resources::UiImageResources::new(&asset_server));
 }
