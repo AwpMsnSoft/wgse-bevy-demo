@@ -35,6 +35,9 @@ macro_rules! get_derive {
 ///     #contents
 /// }
 /// ```
+/// 
+/// Returns: 
+///     `(comments, derives, visibility, name, contents)`
 macro_rules! parse_struct {
     ($ast: expr) => {{
         let name = &$ast.ident;

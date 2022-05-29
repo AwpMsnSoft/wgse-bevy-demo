@@ -2,7 +2,7 @@
 use bevy::prelude::*;
 
 /// `UiWidgetId` is a unique identifier for a widget.
-#[component(Default, Deref)]
+#[component(Default, Deref, PartialEq, Eq, Hash)]
 pub struct UiWidgetId(pub i32);
 
 /// `UiImageSet` is a component that contains three optional handles to `Image` resources.
