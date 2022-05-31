@@ -35,8 +35,8 @@ macro_rules! get_derive {
 ///     #contents
 /// }
 /// ```
-/// 
-/// Returns: 
+///
+/// Returns:
 ///     `(comments, derives, visibility, name, contents)`
 macro_rules! parse_struct {
     ($ast: expr) => {{
@@ -281,6 +281,153 @@ pub fn generic_text(_args: TokenStream, input: TokenStream) -> TokenStream {
         #derives
         #visiblity struct #name {
             #generic_text
+            #content
+        }
+    };
+    TokenStream::from(ast)
+}
+
+/// It takes a struct as user-defined image widget and adds a bunch of Component required by Bevy ui to it
+///
+/// According to the `bevy_ui` source code, a `Image` widget should have the following components:
+/// ```
+/// /// A UI node that is an image
+/// #[derive(Bundle, Clone, Debug, Default)]
+/// pub struct ImageBundle {
+///     /// Describes the size of the node
+///     pub node: Node,
+///     /// Describes the style including flexbox settings
+///     pub style: Style,
+///     /// Configures how the image should scale
+///     pub image_mode: ImageMode,
+///     /// The calculated size based on the given image
+///     pub calculated_size: CalculatedSize,
+///     /// The color of the node
+///     pub color: UiColor,
+///     /// The image of the node
+///     pub image: UiImage,
+///     /// Whether this node should block interaction with lower nodes
+///     pub focus_policy: FocusPolicy,
+///     /// The transform of the node
+///     pub transform: Transform,
+///     /// The global transform of the node
+///     pub global_transform: GlobalTransform,
+///     /// Describes the visibility properties of the node
+///     pub visibility: Visibility,
+/// }
+/// ```
+#[proc_macro_attribute]
+#[allow(unreachable_code)]
+pub fn generic_image(_args: TokenStream, input: TokenStream) -> TokenStream {
+    // Parse the input tokens into a syntax tree.
+    let ast = parse_macro_input!(input as ItemStruct);
+
+    // Build the output, possibly using quasi-quotation.
+    let (comments, derives, visiblity, name, content) = parse_struct!(ast);
+
+    let generic_image = quote! {
+        /// Describes the size of the node
+        pub node: Node,
+        /// Describes the style including flexbox settings
+        pub style: Style,
+        /// Configures how the image should scale
+        pub image_mode: ImageMode,
+        /// The calculated size based on the given image
+        pub calculated_size: CalculatedSize,
+        /// The color of the node
+        pub color: UiColor,
+        /// The image of the node
+        pub image: UiImage,
+        /// Whether this node should block interaction with lower nodes
+        pub focus_policy: FocusPolicy,
+        /// The transform of the node
+        pub transform: Transform,
+        /// The global transform of the node
+        pub global_transform: GlobalTransform,
+        /// Describes the visibility properties of the node
+        pub visibility: Visibility,
+    };
+
+    let ast = quote! {
+        #comments
+        #derives
+        #visiblity struct #name {
+            #generic_image
+            #content
+        }
+    };
+    TokenStream::from(ast)
+}
+
+/// This macro is used to generate
+///     - a empty struct named `#namePolicy` as a tagger
+///     - a macro named `checker_#name_policy` that checks if the given struct has the `#namePolicy` tag and other required members
+#[proc_macro_attribute]
+#[allow(unreachable_code)]
+pub fn define_policy(_args: TokenStream, input: TokenStream) -> TokenStream {
+    // Parse the input tokens into a syntax tree.
+    let ast = parse_macro_input!(input as ItemStruct);
+
+    // Build the output, possibly using quasi-quotation.
+    let (comments, derives, visiblity, name, content) = parse_struct!(ast);
+
+    let ast = quote! {
+        #comments
+        #derives
+        #visiblity struct #name {
+            #content
+        }
+    };
+    TokenStream::from(ast)
+}
+
+/// This macro is used to add `#argsPolicy` tags to the given struct
+#[proc_macro_attribute]
+#[allow(unreachable_code)]
+pub fn impl_policy(args: TokenStream, input: TokenStream) -> TokenStream {
+    /// Parse the input tokens into a syntax tree.
+    let args = parse_macro_input!(args as AttributeArgs);
+
+    // Parse the input tokens into a syntax tree.
+    let ast = parse_macro_input!(input as ItemStruct);
+
+    // Build the output, possibly using quasi-quotation.
+    let (comments, derives, visiblity, name, content) = parse_struct!(ast);
+
+    let ast = quote! {
+        #comments
+        #derives
+        #visiblity struct #name {
+            #content
+        }
+    };
+    TokenStream::from(ast)
+}
+
+/// This macro is a wrapper of `define_policy` and `impl_policy`.
+///     - `#[policy]` is equivalent to `#[define_policy]`
+///     - `#[policy(args...)]` is equivalent to `#[impl_policy(args...)]`
+#[proc_macro_attribute]
+#[allow(unreachable_code)]
+pub fn policy(args: TokenStream, input: TokenStream) -> TokenStream {
+    // Parse the input tokens into a syntax tree.
+    let args = parse_macro_input!(args as AttributeArgs);
+
+    let policy = match args.len() {
+        0 => quote! { #[define_policy] },
+        _ => quote! { #[impl_policy(#args)] },
+    }
+
+    // Parse the input tokens into a syntax tree.
+    let ast = parse_macro_input!(input as ItemStruct);
+
+    // Build the output, possibly using quasi-quotation.
+    let (comments, derives, visiblity, name, content) = parse_struct!(ast);
+
+    let ast = quote! {
+        #comments
+        #derives
+        #visiblity struct #name {
             #content
         }
     };
