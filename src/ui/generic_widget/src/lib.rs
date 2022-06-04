@@ -359,9 +359,28 @@ pub fn generic_image(_args: TokenStream, input: TokenStream) -> TokenStream {
     TokenStream::from(ast)
 }
 
+///
+macro_rules! get_policy_name {
+    ($name: ident) => {{
+        format_ident!("{}Policy", $name)
+    }};
+}
+
+macro_rules! get_policy_member_types_name {
+    ($name: ident) => {{
+        format_ident!("{}_POLICY_MEMBER_TYPES", $name.to_string().to_uppercase())
+    }};
+}
+
+macro_rules! get_policy_checker_name {
+    ($name: ident) => {{
+        format_ident!("is_{}", $name.to_string().to_lowercase())
+    }};
+}
+
 /// This macro is used to generate
 ///     - a empty struct named `#namePolicy` as a tagger
-///     - a macro named `checker_#name_policy` that checks if the given struct has the `#namePolicy` tag and other required members
+///     - a constant named `#name_POLICY_MEMBER_TYPES` which contains all the types that can be used as a member of the policy
 #[proc_macro_attribute]
 #[allow(unreachable_code)]
 pub fn define_policy(_args: TokenStream, input: TokenStream) -> TokenStream {
@@ -369,22 +388,49 @@ pub fn define_policy(_args: TokenStream, input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as ItemStruct);
 
     // Build the output, possibly using quasi-quotation.
-    let (comments, derives, visiblity, name, content) = parse_struct!(ast);
+    let name = &ast.ident;
+    let types = {
+        let ty = match ast.fields {
+            syn::Fields::Named(ref fields) => fields.named.iter().map(|field| {
+                let ty = &field.ty;
+                quote! { #ty }
+            }),
+            _ => unimplemented!(),
+        };
+        quote! { #(#ty)* }
+    }
+    .to_string();
+
+    let policy = get_policy_name!(name);
+    // let policy_name = policy.to_string();
+    // let policy_member_types = get_policy_member_types_name!(name);
+    // let policy_checker = get_policy_checker_name!(name);
 
     let ast = quote! {
-        #comments
-        #derives
-        #visiblity struct #name {
-            #content
-        }
+        /// This struct is used to tag the widget with the `#policy_name` policy
+        pub(crate) struct #policy {}
+
+        // /// This constant is used to record the contents of the `#policy_name` struct
+        // const #policy_member_types: &'static str = #types;
+
+        // /// This macro is used to check if the struct is a superset of the policy
+        // #[macro_export]
+        // macro_rules! #policy_checker {
+        //     ($target: expr, $target_member_types: expr) => {{
+        //         has_policy_members!(#policy_name, #policy_member_types, $target, $target_member_types)
+        //     }};
+        // }
     };
+
+    println!("{}", ast.to_string());
+
     TokenStream::from(ast)
 }
 
 /// This macro is used to add `#argsPolicy` tags to the given struct
 #[proc_macro_attribute]
 #[allow(unreachable_code)]
-pub fn impl_policy(args: TokenStream, input: TokenStream) -> TokenStream {
+pub fn derive_policy(args: TokenStream, input: TokenStream) -> TokenStream {
     /// Parse the input tokens into a syntax tree.
     let args = parse_macro_input!(args as AttributeArgs);
 
@@ -404,32 +450,31 @@ pub fn impl_policy(args: TokenStream, input: TokenStream) -> TokenStream {
     TokenStream::from(ast)
 }
 
-/// This macro is a wrapper of `define_policy` and `impl_policy`.
+/// This macro is a wrapper of `define_policy` and `derive_policy`.
 ///     - `#[policy]` is equivalent to `#[define_policy]`
-///     - `#[policy(args...)]` is equivalent to `#[impl_policy(args...)]`
+///     - `#[policy(args...)]` is equivalent to `#[derive_policy(args...)]`
+///
+/// ## Attentions
+/// - `#[policy]` and `#[policy(args...)]` can only be used on structs
+/// - `#[policy()]` is equivalent to `#[policy]`
 #[proc_macro_attribute]
 #[allow(unreachable_code)]
 pub fn policy(args: TokenStream, input: TokenStream) -> TokenStream {
     // Parse the input tokens into a syntax tree.
     let args = parse_macro_input!(args as AttributeArgs);
+    let ident = {
+        let ident = args.iter();
+        quote! { #(#ident),* }
+    };
 
     let policy = match args.len() {
         0 => quote! { #[define_policy] },
-        _ => quote! { #[impl_policy(#args)] },
-    }
+        _ => quote! { #[derive_policy(#ident)] },
+    };
 
     // Parse the input tokens into a syntax tree.
     let ast = parse_macro_input!(input as ItemStruct);
 
     // Build the output, possibly using quasi-quotation.
-    let (comments, derives, visiblity, name, content) = parse_struct!(ast);
-
-    let ast = quote! {
-        #comments
-        #derives
-        #visiblity struct #name {
-            #content
-        }
-    };
-    TokenStream::from(ast)
+    TokenStream::from(quote! { #policy #ast })
 }
