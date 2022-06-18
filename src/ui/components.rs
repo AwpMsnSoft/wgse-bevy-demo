@@ -1,4 +1,5 @@
 //! All components defined in this file SHOULD named as `Ui${ComponentName}`.
+use crate::ui::widgets::BasicButton;
 use bevy::prelude::*;
 
 /// `UiWidgetId` is a unique identifier for a widget.
@@ -18,3 +19,12 @@ pub struct UiImageSet {
     pub image1: Option<Handle<Image>>,
     pub image2: Option<Handle<Image>>,
 }
+
+#[component(Default, Deref, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct UiInteger(pub i32);
+
+#[component(Default, Deref, PartialEq, PartialOrd)]
+pub struct UiFloat(pub f32);
+
+#[component(Default, Deref, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct UiBool(pub bool);

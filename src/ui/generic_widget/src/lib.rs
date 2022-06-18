@@ -222,6 +222,7 @@ pub fn generic_button(_args: TokenStream, input: TokenStream) -> TokenStream {
     let ast = quote! {
         #comments
         #derives
+        #[derive(Bundle)]
         #visiblity struct #name {
             #generic_button
             #content
@@ -286,6 +287,7 @@ pub fn generic_text(_args: TokenStream, input: TokenStream) -> TokenStream {
     let ast = quote! {
         #comments
         #derives
+        #[derive(Bundle)]
         #visiblity struct #name {
             #generic_text
             #content
@@ -358,6 +360,7 @@ pub fn generic_image(_args: TokenStream, input: TokenStream) -> TokenStream {
     let ast = quote! {
         #comments
         #derives
+        #[derive(Bundle)]
         #visiblity struct #name {
             #generic_image
             #content
