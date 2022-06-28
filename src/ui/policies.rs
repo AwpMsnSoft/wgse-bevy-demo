@@ -1,4 +1,4 @@
-use crate::ui::components::*;
+use crate::ui::{components::*, widgets::*};
 use bevy::prelude::*;
 use bevy::ui::Interaction;
 
@@ -11,9 +11,13 @@ pub struct Hoverable {
 #[policy]
 pub struct Slidable {
     pub _0: UiImage,
+    pub _1: UiFloat,
 }
 
 #[policy]
-pub struct Selectable {
-    pub _0: UiInteger,
+pub struct Switchable {
+    pub _0: UiEntity,
 }
+
+#[policy]
+pub struct SubSwitchable {}

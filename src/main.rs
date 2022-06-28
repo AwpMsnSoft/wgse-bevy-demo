@@ -72,12 +72,5 @@ fn main() {
             debug!("Create window: {:?}", windows.get_primary().unwrap());
         })
         .add_plugins(DefaultPlugins)
-        .add_system(test_mouse)
         .run();
-}
-
-fn test_mouse(mut mouse: EventReader<CursorMoved>, windows: Res<Windows>) {
-    for event in mouse.iter() {
-        info!("{:?}", &(event.position, windows.get_primary().unwrap().position()));
-    }
 }
