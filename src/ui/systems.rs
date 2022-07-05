@@ -1,7 +1,4 @@
-use crate::ui::{
-    components::*,
-    policies::*,
-};
+use crate::ui::{components::*, policies::*, resources::*};
 use bevy::prelude::*;
 use bevy::ui::Interaction;
 use rayon::prelude::*;
@@ -86,39 +83,48 @@ pub fn slidable_policy_system(
 }
 
 /// Change active child of a `Switch` based on the button interaction.
+/// `Switch` will be notified by `SwitchChangedEvent` when it's children button widget is clicked.
 pub fn switchable_policy_system(
-    mut policy_query: Query<
-        (&UiEntity, &Children),
-        (With<SwitchablePolicy>, Changed<UiEntity>),
-    >,
+    mut policy_query: Query<&mut UiEntity, (With<SwitchablePolicy>, With<Children>)>,
     mut children_query: Query<&mut Visibility>,
+    mut active_child: EventReader<SwitchChangedEvent>,
 ) {
-    for (active_child, children) in policy_query.iter() {
-        if !children.contains(active_child) {
-            panic!("`active_child` {:?} is not a child of the `Switch`, maybe a memory overlap?", active_child);
+    // Only handle the latest clicked child in one frame.
+    if let Some(curr_active_child) = active_child.iter().last() {
+        for mut prev_active_child in policy_query.iter_mut() {
+            // Set the previous active child and set it's visibility to `Hidden`.
+            if let Some(prev_active_child) = prev_active_child.0 {
+                let mut prev_active_child_vis = children_query.get_mut(prev_active_child).unwrap();
+                prev_active_child_vis.is_visible = false;
+            }
+            // Set the current active child and set it's visibility to `Visible`.
+            if let Some(curr_active_child) = curr_active_child.0 {
+                let mut curr_active_child_vis = children_query.get_mut(curr_active_child).unwrap();
+                curr_active_child_vis.is_visible = true;
+            }
+            // Set the current active child as the previous active child.
+            prev_active_child.0 = curr_active_child.0;
         }
-        // Hide all children
-        for mut vis in children_query.iter_mut() {
-            vis.is_visible = false;
-        }
-        // Then show the active one.
-        let mut active_child_vis = children_query.get_mut(active_child.0).unwrap();
-        active_child_vis.is_visible = true;
     }
 }
 
-/// Set parent's `active_child` filed to the child that is clicked.
+/// This is used to change the active child of a `Switch`.
+/// Send a `SwitchChangedEvent` which contains the new active child to the `Switch` entity.
 pub fn sub_switchable_policy_system(
-    mut policy_query: Query<
-        (Entity, &Interaction, &Parent),
-        (With<SubSwitchablePolicy>, With<Button>, Changed<Interaction>),
+    policy_query: Query<
+        (Entity, &Interaction),
+        (
+            With<SubSwitchablePolicy>,
+            With<Button>,
+            With<Parent>,
+            Changed<Interaction>,
+        ),
     >,
-    mut parent_query: Query<&mut UiEntity>,
+    mut activation_changed: EventWriter<SwitchChangedEvent>,
 ) {
-    for (entity, interaction, parent) in policy_query.iter() {
+    for (entity, interaction) in policy_query.iter() {
         if let Interaction::Clicked = interaction {
-            let mut parent_active_child = parent_query.get_mut(parent.0).unwrap();
-            *parent_active_child = UiEntity(entity);
+            activation_changed.send(SwitchChangedEvent(Some(entity)));
         }
     }
 }

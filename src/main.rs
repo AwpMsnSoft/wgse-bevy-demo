@@ -1,5 +1,4 @@
 // #![windows_subsystem = "windows"]
-use bevy::input::mouse::MouseMotion;
 use bevy::log::{Level, LogSettings};
 use bevy::prelude::*;
 use bevy::render::settings::{Backends, WgpuSettings};
@@ -12,7 +11,6 @@ extern crate generic_widget;
 pub(crate) mod cg;
 pub(crate) mod media;
 pub(crate) mod script;
-pub(crate) mod system;
 pub(crate) mod text;
 pub(crate) mod ui;
 
