@@ -3,13 +3,12 @@ use std::collections::HashMap;
 use super::{
     descriptors::Descriptor,
     resources::{
-        UiImageResources, CONFIG_SPEED_TITLE_RES_MAP, EXTRA_TITLE_RES_MAP, MAIN_TITLE_RES_MAP,
+        UiImageResources, MAIN_TITLE_RES_MAP,
     },
     states::{
-        ConfigTitleState, MainTitleState, UiState, CONFIG_SPEED_TITLE_BUTTON_STATE_MAP,
-        EXTRA_TITLE_BUTTON_STATE_MAP, MAIN_TITLE_BUTTON_STATE_MAP,
+        MainTitleState, UiState, MAIN_TITLE_BUTTON_STATE_MAP,
     },
-    ui::{CONFIG_SPEED_TITLE_LAYOUT, EXTRA_TITLE_LAYOUT, MAIN_TITLE_LAYOUT},
+    ui::{MAIN_TITLE_LAYOUT, START_TITLE_LAYOUT},
 };
 use crate::{
     system::buttons::{game_exit_button_event, ui_button_event_curried},
@@ -37,36 +36,36 @@ impl Plugin for UIPlugin {
                 SystemSet::on_exit(UiState::from(MainTitleState::Main))
                     .with_system(title_despawn_curried(&*MAIN_TITLE_RES_MAP)),
             )
-            // extra title ui
-            .add_system_set(
-                SystemSet::on_enter(UiState::from(MainTitleState::Extra))
-                    .with_system(title_spawn_curried(&*EXTRA_TITLE_LAYOUT)),
-            )
-            .add_system_set(
-                SystemSet::on_update(UiState::from(MainTitleState::Extra))
-                    .with_system(title_load_images_curried(&*EXTRA_TITLE_RES_MAP))
-                    .with_system(ui_button_event_curried(&*EXTRA_TITLE_BUTTON_STATE_MAP)),
-            )
-            .add_system_set(
-                SystemSet::on_exit(UiState::from(MainTitleState::Extra))
-                    .with_system(title_despawn_curried(&*EXTRA_TITLE_RES_MAP)),
-            )
-            // config speed title ui
-            .add_system_set(
-                SystemSet::on_enter(UiState::from(ConfigTitleState::Speed))
-                    .with_system(title_spawn_curried(&*CONFIG_SPEED_TITLE_LAYOUT)),
-            )
-            .add_system_set(
-                SystemSet::on_update(UiState::from(ConfigTitleState::Speed))
-                    .with_system(title_load_images_curried(&*CONFIG_SPEED_TITLE_RES_MAP))
-                    .with_system(ui_button_event_curried(
-                        &*CONFIG_SPEED_TITLE_BUTTON_STATE_MAP,
-                    )),
-            )
-            .add_system_set(
-                SystemSet::on_exit(UiState::from(ConfigTitleState::Speed))
-                    .with_system(title_despawn_curried(&*CONFIG_SPEED_TITLE_RES_MAP)),
-            )
+            // // extra title ui
+            // .add_system_set(
+            //     SystemSet::on_enter(UiState::from(MainTitleState::Extra))
+            //         .with_system(title_spawn_curried(&*EXTRA_TITLE_LAYOUT)),
+            // )
+            // .add_system_set(
+            //     SystemSet::on_update(UiState::from(MainTitleState::Extra))
+            //         .with_system(title_load_images_curried(&*EXTRA_TITLE_RES_MAP))
+            //         .with_system(ui_button_event_curried(&*EXTRA_TITLE_BUTTON_STATE_MAP)),
+            // )
+            // .add_system_set(
+            //     SystemSet::on_exit(UiState::from(MainTitleState::Extra))
+            //         .with_system(title_despawn_curried(&*EXTRA_TITLE_RES_MAP)),
+            // )
+            // // config speed title ui
+            // .add_system_set(
+            //     SystemSet::on_enter(UiState::from(ConfigTitleState::Speed))
+            //         .with_system(title_spawn_curried(&*CONFIG_SPEED_TITLE_LAYOUT)),
+            // )
+            // .add_system_set(
+            //     SystemSet::on_update(UiState::from(ConfigTitleState::Speed))
+            //         .with_system(title_load_images_curried(&*CONFIG_SPEED_TITLE_RES_MAP))
+            //         .with_system(ui_button_event_curried(
+            //             &*CONFIG_SPEED_TITLE_BUTTON_STATE_MAP,
+            //         )),
+            // )
+            // .add_system_set(
+            //     SystemSet::on_exit(UiState::from(ConfigTitleState::Speed))
+            //         .with_system(title_despawn_curried(&*CONFIG_SPEED_TITLE_RES_MAP)),
+            // )
             .add_system_set(SystemSet::new().with_system(game_exit_button_event));
     }
 }

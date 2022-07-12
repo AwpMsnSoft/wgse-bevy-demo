@@ -1377,15 +1377,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "generic_widget"
-version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "getrandom"
 version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3143,7 +3134,6 @@ name = "wgse-bevy"
 version = "0.1.0"
 dependencies = [
  "bevy",
- "generic_widget",
  "ghost-cell",
  "lazy_static",
  "rand",

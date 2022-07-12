@@ -1,13 +1,7 @@
-#![windows_subsystem = "windows"]
+// #![windows_subsystem = "windows"]
 use bevy::log::{Level, LogSettings};
 use bevy::prelude::*;
-use bevy::*;
-use bevy::render::settings::{WgpuSettings, Backends};
 use ui::ui::{WINDOW_HEIGHT, WINDOW_WIDTH};
-
-#[allow(unused_imports)]
-#[macro_use]
-extern crate generic_widget;
 
 pub(crate) mod cg;
 pub(crate) mod media;
@@ -20,20 +14,12 @@ fn main() {
     App::new()
         .insert_resource({
             WindowDescriptor {
-                title: String::from("dokoiku HD"),
                 width: WINDOW_WIDTH,
                 height: WINDOW_HEIGHT,
-                scale_factor_override: Some(1.0),
-                resizable: false,
-                mode: window::WindowMode::Windowed,
                 ..Default::default()
             }
         })
         .insert_resource(ClearColor(Color::rgb_u8(255, 255, 255)))
-        .insert_resource(WgpuSettings {
-            backends: Some(Backends::PRIMARY),
-            ..Default::default()
-        })
         .insert_resource(LogSettings {
             level: Level::DEBUG,
             filter: String::from("wgpu=error,bevy_render=info,naga=info"),
