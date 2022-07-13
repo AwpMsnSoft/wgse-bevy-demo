@@ -3134,6 +3134,7 @@ name = "wgse-bevy"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "console_error_panic_hook",
  "ghost-cell",
  "lazy_static",
  "rand",

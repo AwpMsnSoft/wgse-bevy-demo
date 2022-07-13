@@ -10,9 +10,15 @@ pub(crate) mod system;
 pub(crate) mod text;
 pub(crate) mod ui;
 
+#[bevy_main]
 fn main() {
+    // When building for WASM, print panics to the browser console
+    #[cfg(target_arch = "wasm32")]
+    {
+        console_error_panic_hook::set_once();
+    }
     App::new()
-        .insert_resource({
+        .insert_resource({ 
             WindowDescriptor {
                 width: WINDOW_WIDTH,
                 height: WINDOW_HEIGHT,
@@ -22,7 +28,8 @@ fn main() {
         .insert_resource(ClearColor(Color::rgb_u8(255, 255, 255)))
         .insert_resource(LogSettings {
             level: Level::DEBUG,
-            filter: String::from("wgpu=error,bevy_render=info,naga=info"),
+            ..Default::default()
+            // filter: String::from("wgpu=error,bevy_render=info,naga=info"),
         })
         .add_startup_system(|windows: Res<Windows>| {
             info!("Game initializing...");
