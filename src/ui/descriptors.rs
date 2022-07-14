@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, __private::de};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Component, PartialEq, Eq, Hash)]
 pub struct WidgetId(pub i32);
@@ -45,6 +45,7 @@ macro_rules! descriptor {
 pub enum WidgetDescriptor {
     button(ButtonDescriptor),
     image(ImageDescriptor),
+    text(TextDescriptor),
 }
 
 #[allow(unreachable_patterns)]
@@ -63,6 +64,13 @@ pub fn widget_descriptor_spawn(parent: &mut ChildBuilder, descriptor: &Descripto
             parent.spawn_bundle(WidgetBundle {
                 id: WidgetId(descriptor.id),
                 children: ImageBundle::from(image.clone()),
+            });
+        }
+        WidgetDescriptor::text(text) => {
+            debug!("Spawning text: {:?}", text);
+            parent.spawn_bundle(WidgetBundle {
+                id: WidgetId(descriptor.id),
+                children: TextBundle::from(text.clone()),
             });
         }
         _ => panic!("Current WidgetDescriptor is not supported yet."),
@@ -100,15 +108,15 @@ impl From<ButtonDescriptor> for ButtonBundle {
 
 #[macro_export]
 macro_rules! button {
-    ($size_x: expr, $size_y: expr, $position_x: expr, $position_y: expr) => {{
+    ($size: expr, $position: expr) => {{
         ButtonDescriptor {
-            size: Vec2::new($size_x, $size_y),
-            position: Vec2::new($position_x, $position_y),
+            size: Vec2::from($size),
+            position: Vec2::from($position),
         }
     }};
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Component)]
+#[derive(Debug, Deref, DerefMut, Clone, Serialize, Deserialize, Component)]
 pub struct Scale2D(pub Vec2);
 
 impl Default for Scale2D {
@@ -156,10 +164,74 @@ impl From<ImageDescriptor> for ImageBundle {
 
 #[macro_export]
 macro_rules! image {
-    ($size_x: expr, $size_y: expr, $position_x: expr, $position_y: expr) => {{
+    ($size: expr, $position: expr) => {{
         ImageDescriptor {
-            size: Vec2::new($size_x, $size_y),
-            position: Vec2::new($position_x, $position_y),
+            size: Vec2::from($size),
+            position: Vec2::from($position),
+            ..Default::default()
+        }
+    }};
+}
+
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Component)]
+pub struct FontSettings {
+    pub size: f32,
+    pub color: Vec3,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Component)]
+pub struct TextDescriptor {
+    pub size: Vec2,
+    pub position: Vec2,
+    #[serde(default)]
+    pub font: FontSettings,
+}
+
+impl From<TextDescriptor> for TextBundle {
+    fn from(descriptor: TextDescriptor) -> Self {
+        Self {
+            style: Style {
+                size: Size {
+                    width: Val::Px(descriptor.size.x),
+                    height: Val::Px(descriptor.size.y),
+                },
+                position_type: PositionType::Absolute,
+                position: Rect {
+                    left: Val::Px(descriptor.position.x),
+                    right: Val::Px(descriptor.position.x + descriptor.size.x),
+                    top: Val::Px(descriptor.position.y),
+                    bottom: Val::Px(descriptor.position.y - descriptor.size.y),
+                },
+                ..Default::default()
+            },
+            text: Text::with_section(
+                "",
+                TextStyle {
+                    font_size: descriptor.font.size,
+                    color: Color::rgb(
+                        descriptor.font.color.x,
+                        descriptor.font.color.y,
+                        descriptor.font.color.z,
+                    ),
+                    ..Default::default()
+                },
+                Default::default(),
+            ),
+            ..Default::default()
+        }
+    }
+}
+
+#[macro_export]
+macro_rules! text {
+    ($size: expr, $position: expr, $font_size: expr, $color: expr) => {{
+        TextDescriptor {
+            size: Vec2::from($size),
+            position: Vec2::from($position),
+            font: FontSettings {
+                size: $font_size,
+                color: Vec3::from($color),
+            },
             ..Default::default()
         }
     }};
@@ -172,7 +244,7 @@ pub struct GroupDescriptor(pub Vec<Descriptor>);
 fn test_image_serialization() {
     let image = Descriptor {
         id: 0,
-        content: WidgetDescriptor::image(image!(100.0, 100.0, 0.0, 0.0)),
+        content: WidgetDescriptor::image(image!((100.0, 100.0), (0.0, 0.0))),
         children: None,
     };
     let serialized = serde_json::to_string(&image).unwrap();

@@ -1,8 +1,9 @@
-use super::descriptors::WidgetId;
+use crate::ui::descriptors::WidgetId;
 use bevy::prelude::*;
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 
+/// The image of each widget is stored in this resource.
 #[derive(Component, Debug)]
 pub struct UiImageResources(pub HashMap<&'static str, Handle<Image>>);
 
@@ -45,6 +46,19 @@ lazy_static! {
     };
 }
 
+pub const START_TITLE_BG_GUID: WidgetId = WidgetId(10150);
+pub const START_TITLE_NAME_TEXTBOX_GUID: WidgetId = WidgetId(10151);
+pub const START_TITLE_NAME_TEXTBOX_DUMMY_BUTTON_GUID: WidgetId = WidgetId(10152);
+pub const START_TITLE_DIALOG_TEXTBOX_GUID: WidgetId = WidgetId(10153);
+pub const START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID: WidgetId = WidgetId(10154);
+
+lazy_static! {
+    pub static ref START_TITLE_RES_MAP: HashMap<WidgetId, &'static str> = {
+        HashMap::new()
+    };
+}
+
+
 pub const EXTRA_TITLE_BG_GUID: WidgetId = WidgetId(10200);
 pub const EXTRA_TITLE_CG_BUTTON_GUID: WidgetId = WidgetId(10201);
 pub const EXTRA_TITLE_SCENE_BUTTON_GUID: WidgetId = WidgetId(10202);
@@ -83,4 +97,14 @@ lazy_static! {
         map.insert(CONFIG_SPEED_TITLE_SKIP_READED_OFF_BUTTON_GUID, "pictures/button/config_title/skip_off_button_clicked.png"); // skip readed off button
         map
     };
+}
+
+/// The font used in the game.
+#[derive(Component, Debug)]
+pub struct FontResources(pub Handle<Font>);
+
+impl FontResources {
+    pub fn new(asset_server: &AssetServer) -> Self {
+        FontResources(asset_server.load("fonts/YuanRouHeiTi.ttf"))
+    }
 }

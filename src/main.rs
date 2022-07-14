@@ -1,7 +1,10 @@
 // #![windows_subsystem = "windows"]
+use crate::ui::{
+    resources::{FontResources, UiImageResources},
+    ui::{WINDOW_HEIGHT, WINDOW_WIDTH},
+};
 use bevy::log::{Level, LogSettings};
 use bevy::prelude::*;
-use ui::ui::{WINDOW_HEIGHT, WINDOW_WIDTH};
 
 pub(crate) mod cg;
 pub(crate) mod media;
@@ -18,7 +21,7 @@ fn main() {
         console_error_panic_hook::set_once();
     }
     App::new()
-        .insert_resource({ 
+        .insert_resource({
             WindowDescriptor {
                 width: WINDOW_WIDTH,
                 height: WINDOW_HEIGHT,
@@ -28,8 +31,7 @@ fn main() {
         .insert_resource(ClearColor(Color::rgb_u8(255, 255, 255)))
         .insert_resource(LogSettings {
             level: Level::DEBUG,
-            ..Default::default()
-            // filter: String::from("wgpu=error,bevy_render=info,naga=info"),
+            filter: String::from("wgpu=error,bevy_render=info,naga=info"),
         })
         .add_startup_system(|windows: Res<Windows>| {
             info!("Game initializing...");
@@ -43,5 +45,6 @@ fn main() {
 
 fn setup(mut command: Commands, asset_server: Res<AssetServer>) {
     command.spawn_bundle(UiCameraBundle::default());
-    command.insert_resource(ui::resources::UiImageResources::new(&asset_server));
+    command.insert_resource(UiImageResources::new(&asset_server));
+    command.insert_resource(FontResources::new(&asset_server));
 }
