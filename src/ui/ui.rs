@@ -49,39 +49,23 @@ lazy_static! {
         WidgetDescriptor::image(image!((WINDOW_WIDTH, WINDOW_HEIGHT), (0.0, WINDOW_HEIGHT))),
         Some(GroupDescriptor(vec![
             descriptor!(
-                START_TITLE_DIALOG_TEXTBOX_GUID.0,
-                WidgetDescriptor::text(text!(
-                    (WINDOW_WIDTH, WINDOW_HEIGHT),
-                    (0.0, WINDOW_HEIGHT),
-                    20.0,
-                    (0.0, 0.0, 0.0)
-                )),
+                START_TITLE_NAME_TEXTBOX_GUID.0,
+                WidgetDescriptor::text(text!((187.0, 52.0), (17.0, 382.0), 20.0, (255.0, 255.0, 255.0))),
                 Some(GroupDescriptor(vec![descriptor!(
-                    START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID.0,
-                    WidgetDescriptor::button(button!(
-                        (100.0, 40.0),
-                        (WINDOW_WIDTH / 2.0 - 50.0, WINDOW_HEIGHT - 480.0)
-                    )),
+                    START_TITLE_NAME_TEXTBOX_DUMMY_BUTTON_GUID.0,
+                    WidgetDescriptor::button(button!((187.0, 52.0), (17.0, 382.0))),
                     None
                 )]))
             ),
             descriptor!(
-                START_TITLE_NAME_TEXTBOX_GUID.0,
-                WidgetDescriptor::text(text!(
-                    (WINDOW_WIDTH, WINDOW_HEIGHT),
-                    (0.0, WINDOW_HEIGHT),
-                    20.0,
-                    (0.0, 0.0, 0.0)
-                )),
+                START_TITLE_DIALOG_TEXTBOX_GUID.0,
+                WidgetDescriptor::text(text!((13.0, 450.0), (787.0, 142.0), 20.0, (255.0, 255.0, 255.0))),
                 Some(GroupDescriptor(vec![descriptor!(
-                    START_TITLE_NAME_TEXTBOX_DUMMY_BUTTON_GUID.0,
-                    WidgetDescriptor::button(button!(
-                        (100.0, 40.0),
-                        (WINDOW_WIDTH / 2.0 - 50.0, WINDOW_HEIGHT - 480.0)
-                    )),
+                    START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID.0,
+                    WidgetDescriptor::button(button!((13.0, 450.0), (787.0, 142.0))),
                     None
                 )]))
-            )
+            ),
         ]))
     )];
 }

@@ -28,7 +28,7 @@ fn main() {
                 ..Default::default()
             }
         })
-        .insert_resource(ClearColor(Color::rgb_u8(255, 255, 255)))
+        .insert_resource(ClearColor(Color::rgb_u8(0, 0, 0)))
         .insert_resource(LogSettings {
             level: Level::DEBUG,
             filter: String::from("wgpu=error,bevy_render=info,naga=info"),

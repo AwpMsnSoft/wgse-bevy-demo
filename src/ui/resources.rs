@@ -23,6 +23,7 @@ impl UiImageResources {
 lazy_static! {
     static ref UI_TITLE_RES_LIST: Vec<HashMap<WidgetId, &'static str>> = vec![
         MAIN_TITLE_RES_MAP.clone(),
+        START_TITLE_RES_MAP.clone(),
         EXTRA_TITLE_RES_MAP.clone(),
         CONFIG_SPEED_TITLE_RES_MAP.clone()
     ];
@@ -54,7 +55,9 @@ pub const START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID: WidgetId = WidgetId(1015
 
 lazy_static! {
     pub static ref START_TITLE_RES_MAP: HashMap<WidgetId, &'static str> = {
-        HashMap::new()
+        let mut map = HashMap::new();
+        map.insert(START_TITLE_BG_GUID, "pictures/in_game_mes_win.png");
+        map
     };
 }
 

@@ -51,30 +51,40 @@ pub enum WidgetDescriptor {
 #[allow(unreachable_patterns)]
 // TODO: use a macro to generate this
 pub fn widget_descriptor_spawn(parent: &mut ChildBuilder, descriptor: &Descriptor) {
-    match &descriptor.content {
+    // Spawn main widget
+    let mut main_command = match &descriptor.content {
         WidgetDescriptor::button(button) => {
             debug!("Spawning button: {:?}", button);
             parent.spawn_bundle(WidgetBundle {
                 id: WidgetId(descriptor.id),
                 children: ButtonBundle::from(button.clone()),
-            });
+            })
         }
         WidgetDescriptor::image(image) => {
             debug!("Spawning image: {:?}", image);
             parent.spawn_bundle(WidgetBundle {
                 id: WidgetId(descriptor.id),
                 children: ImageBundle::from(image.clone()),
-            });
+            })
         }
         WidgetDescriptor::text(text) => {
             debug!("Spawning text: {:?}", text);
             parent.spawn_bundle(WidgetBundle {
                 id: WidgetId(descriptor.id),
                 children: TextBundle::from(text.clone()),
-            });
+            })
         }
         _ => panic!("Current WidgetDescriptor is not supported yet."),
-    }
+    };
+    // Spawn children widgets (if any)
+    if let Some(children) = &descriptor.children {
+        debug!("Spawning children: {:?}", children);
+        main_command.with_children(|parent| {
+            for child in children.0.iter() {
+                widget_descriptor_spawn(parent, child);
+            }
+        });
+    };
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Component)]
