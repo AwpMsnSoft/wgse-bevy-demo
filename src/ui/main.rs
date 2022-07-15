@@ -2,12 +2,8 @@ use std::collections::HashMap;
 
 use super::{
     descriptors::Descriptor,
-    resources::{
-        UiImageResources, MAIN_TITLE_RES_MAP, START_TITLE_RES_MAP,
-    },
-    states::{
-        MainTitleState, UiState, MAIN_TITLE_BUTTON_STATE_MAP,
-    },
+    resources::{UiImageResources, MAIN_TITLE_RES_MAP, START_TITLE_RES_MAP},
+    states::{MainTitleState, UiState, MAIN_TITLE_BUTTON_STATE_MAP, START_TITLE_BUTTON_STATE_MAP},
     ui::{MAIN_TITLE_LAYOUT, START_TITLE_LAYOUT},
 };
 use crate::{
@@ -43,7 +39,12 @@ impl Plugin for UIPlugin {
             )
             .add_system_set(
                 SystemSet::on_update(UiState::from(MainTitleState::Start))
-                    .with_system(title_load_images_curried(&*START_TITLE_RES_MAP)),
+                    .with_system(title_load_images_curried(&*START_TITLE_RES_MAP))
+                    .with_system(ui_button_event_curried(&*START_TITLE_BUTTON_STATE_MAP)),
+            )
+            .add_system_set(
+                SystemSet::on_exit(UiState::from(MainTitleState::Start))
+                    .with_system(title_despawn_curried(&*START_TITLE_RES_MAP)),
             )
             .add_system_set(SystemSet::new().with_system(game_exit_button_event));
     }

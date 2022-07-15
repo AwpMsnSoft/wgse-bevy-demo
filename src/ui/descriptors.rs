@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use serde::{Deserialize, Serialize, __private::de};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Component, PartialEq, Eq, Hash)]
 pub struct WidgetId(pub i32);
@@ -54,21 +54,21 @@ pub fn widget_descriptor_spawn(parent: &mut ChildBuilder, descriptor: &Descripto
     // Spawn main widget
     let mut main_command = match &descriptor.content {
         WidgetDescriptor::button(button) => {
-            debug!("Spawning button: {:?}", button);
+            debug!("Spawning button {:?}: {:?}", descriptor.id, button);
             parent.spawn_bundle(WidgetBundle {
                 id: WidgetId(descriptor.id),
                 children: ButtonBundle::from(button.clone()),
             })
         }
         WidgetDescriptor::image(image) => {
-            debug!("Spawning image: {:?}", image);
+            debug!("Spawning image {:?}: {:?}", descriptor.id, image);
             parent.spawn_bundle(WidgetBundle {
                 id: WidgetId(descriptor.id),
                 children: ImageBundle::from(image.clone()),
             })
         }
         WidgetDescriptor::text(text) => {
-            debug!("Spawning text: {:?}", text);
+            debug!("Spawning text {:?}: {:?}", descriptor.id, text);
             parent.spawn_bundle(WidgetBundle {
                 id: WidgetId(descriptor.id),
                 children: TextBundle::from(text.clone()),
@@ -78,7 +78,7 @@ pub fn widget_descriptor_spawn(parent: &mut ChildBuilder, descriptor: &Descripto
     };
     // Spawn children widgets (if any)
     if let Some(children) = &descriptor.children {
-        debug!("Spawning children: {:?}", children);
+        debug!("Spawning children as follows:");
         main_command.with_children(|parent| {
             for child in children.0.iter() {
                 widget_descriptor_spawn(parent, child);

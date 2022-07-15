@@ -24,16 +24,16 @@ lazy_static! {
                 WidgetDescriptor::button(button!((100.0, 40.0), (200.0, WINDOW_HEIGHT - 480.0))),
                 None
             ),
-            // descriptor!(
-            //     MAIN_TITLE_CONFIG_BUTTON_GUID.0,
-            //     WidgetDescriptor::button(button!((100.0, 40.0), (300.0, WINDOW_HEIGHT - 480.0))),
-            //     None
-            // ),
-            // descriptor!(
-            //     MAIN_TITLE_EXTRA_BUTTON_GUID.0,
-            //     WidgetDescriptor::button(button!((100.0, 40.0), (400.0, WINDOW_HEIGHT - 480.0))),
-            //     None
-            // ),
+            descriptor!(
+                MAIN_TITLE_CONFIG_BUTTON_GUID.0,
+                WidgetDescriptor::button(button!((100.0, 40.0), (300.0, WINDOW_HEIGHT - 480.0))),
+                None
+            ),
+            descriptor!(
+                MAIN_TITLE_EXTRA_BUTTON_GUID.0,
+                WidgetDescriptor::button(button!((100.0, 40.0), (400.0, WINDOW_HEIGHT - 480.0))),
+                None
+            ),
             descriptor!(
                 MAIN_TITLE_EXIT_BUTTON_GUID.0,
                 WidgetDescriptor::button(button!((100.0, 40.0), (500.0, WINDOW_HEIGHT - 480.0))),
@@ -50,22 +50,28 @@ lazy_static! {
         Some(GroupDescriptor(vec![
             descriptor!(
                 START_TITLE_NAME_TEXTBOX_GUID.0,
-                WidgetDescriptor::text(text!((187.0, 52.0), (17.0, 382.0), 20.0, (255.0, 255.0, 255.0))),
-                Some(GroupDescriptor(vec![descriptor!(
-                    START_TITLE_NAME_TEXTBOX_DUMMY_BUTTON_GUID.0,
-                    WidgetDescriptor::button(button!((187.0, 52.0), (17.0, 382.0))),
-                    None
-                )]))
+                WidgetDescriptor::text(text!(
+                    (187.0, 52.0),
+                    (17.0, WINDOW_HEIGHT - 382.0),
+                    20.0,
+                    (255.0, 255.0, 255.0)
+                )),
+                None
             ),
             descriptor!(
-                START_TITLE_DIALOG_TEXTBOX_GUID.0,
-                WidgetDescriptor::text(text!((13.0, 450.0), (787.0, 142.0), 20.0, (255.0, 255.0, 255.0))),
+                START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID.0,
+                WidgetDescriptor::button(button!((787.0, 142.0), (13.0, WINDOW_HEIGHT - 450.0))),
                 Some(GroupDescriptor(vec![descriptor!(
-                    START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID.0,
-                    WidgetDescriptor::button(button!((13.0, 450.0), (787.0, 142.0))),
+                    START_TITLE_DIALOG_TEXTBOX_GUID.0,
+                    WidgetDescriptor::text(text!(
+                        (787.0, 142.0),
+                        (13.0, WINDOW_HEIGHT - 450.0),
+                        20.0,
+                        (255.0, 255.0, 255.0)
+                    )),
                     None
                 )]))
-            ),
+            )
         ]))
     )];
 }

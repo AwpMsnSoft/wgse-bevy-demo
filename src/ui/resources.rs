@@ -57,6 +57,7 @@ lazy_static! {
     pub static ref START_TITLE_RES_MAP: HashMap<WidgetId, &'static str> = {
         let mut map = HashMap::new();
         map.insert(START_TITLE_BG_GUID, "pictures/in_game_mes_win.png");
+        map.insert(START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID, "pictures/button/default.png"); // dummy button for dialog textbox
         map
     };
 }
