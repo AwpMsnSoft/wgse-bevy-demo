@@ -49,7 +49,7 @@ lazy_static! {
 
 pub const START_TITLE_BG_GUID: WidgetId = WidgetId(10150);
 pub const START_TITLE_NAME_TEXTBOX_GUID: WidgetId = WidgetId(10151);
-pub const START_TITLE_NAME_TEXTBOX_DUMMY_BUTTON_GUID: WidgetId = WidgetId(10152);
+// pub const START_TITLE_NAME_TEXTBOX_DUMMY_BUTTON_GUID: WidgetId = WidgetId(10152);
 pub const START_TITLE_DIALOG_TEXTBOX_GUID: WidgetId = WidgetId(10153);
 pub const START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID: WidgetId = WidgetId(10154);
 

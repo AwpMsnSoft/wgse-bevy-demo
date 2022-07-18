@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'MSEngineBevy'",
+            "name": "Debug executable 'wgse-bevy'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=MSEngineBevy",
-                    "--package=MSEngineBevy"
+                    "--bin=wgse-bevy",
+                    "--package=wgse-bevy"
                 ],
                 "filter": {
-                    "name": "MSEngineBevy",
+                    "name": "wgse-bevy",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'MSEngineBevy'",
+            "name": "Debug unit tests in executable 'wgse-bevy'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=MSEngineBevy",
-                    "--package=MSEngineBevy"
+                    "--bin=wgse-bevy",
+                    "--package=wgse-bevy"
                 ],
                 "filter": {
-                    "name": "MSEngineBevy",
+                    "name": "wgse-bevy",
                     "kind": "bin"
                 }
             },
