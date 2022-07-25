@@ -1,12 +1,12 @@
 use crate::{
-    script::events::{Message, WgsInnerCommand},
+    script::commands as wgs,
     ui::{
         descriptors::{Descriptor, TextDescriptor, WidgetId},
         resources::{
             FontResources, START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID,
             START_TITLE_DIALOG_TEXTBOX_GUID, START_TITLE_NAME_TEXTBOX_GUID,
         },
-        states::{MainTitleState, StartTitleState, UiState},
+        states::{MainTitleState, UiState},
     },
 };
 use bevy::prelude::*;
@@ -14,7 +14,7 @@ use bevy::prelude::*;
 pub fn dialog_textbox_button_system(
     mut interaction_query: Query<(&Interaction, &WidgetId), (With<Children>, Changed<Interaction>)>,
     ui_state: Res<State<UiState>>,
-    mut next: EventWriter<WgsInnerCommand>,
+    mut next: EventWriter<wgs::Next>,
 ) {
     for (interaction, widget_id) in interaction_query.iter_mut() {
         if ui_state.current() == &UiState::from(MainTitleState::Start)
@@ -22,7 +22,7 @@ pub fn dialog_textbox_button_system(
         {
             if interaction == &Interaction::Clicked {
                 // Get next dialog from script
-                next.send(WgsInnerCommand::Next);
+                next.send(wgs::Next {});
             }
         }
     }
@@ -31,7 +31,7 @@ pub fn dialog_textbox_button_system(
 pub fn dialog_textbox_name_system(
     mut text_query: Query<(&mut Text, &WidgetId), With<Children>>,
     ui_state: Res<State<UiState>>,
-    mut command: EventReader<Message>,
+    mut command: EventReader<wgs::Message>,
 ) {
     for (mut text, widget_id) in text_query.iter_mut() {
         if ui_state.current() == &UiState::from(MainTitleState::Start)
@@ -47,7 +47,7 @@ pub fn dialog_textbox_name_system(
 pub fn dialog_textbox_text_system(
     mut text_query: Query<(&mut Text, &WidgetId), With<Parent>>,
     ui_state: Res<State<UiState>>,
-    mut command: EventReader<Message>,
+    mut command: EventReader<wgs::Message>,
 ) {
     for (mut text, widget_id) in text_query.iter_mut() {
         if ui_state.current() == &UiState::from(MainTitleState::Start)
