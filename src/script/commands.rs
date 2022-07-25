@@ -40,3 +40,12 @@ pub struct Lable {
 ///
 /// This command is a dummy command which only used to control flow of script.
 pub struct Next {}
+
+/// Change to another script.
+/// 
+/// ### format
+/// 
+/// `.chain {script}`
+pub struct Chain {
+    pub next: String,
+}

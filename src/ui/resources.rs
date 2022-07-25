@@ -62,7 +62,6 @@ lazy_static! {
     };
 }
 
-
 pub const EXTRA_TITLE_BG_GUID: WidgetId = WidgetId(10200);
 pub const EXTRA_TITLE_CG_BUTTON_GUID: WidgetId = WidgetId(10201);
 pub const EXTRA_TITLE_SCENE_BUTTON_GUID: WidgetId = WidgetId(10202);
