@@ -13,9 +13,9 @@ use crate::{
 use bevy::{prelude::*, render::texture::DEFAULT_IMAGE_HANDLE};
 
 #[derive(Debug)]
-pub struct UIPlugin;
+pub struct UiPlugin;
 
-impl Plugin for UIPlugin {
+impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_state(UiState::from(MainTitleState::Main))
             // main title ui
@@ -47,6 +47,10 @@ impl Plugin for UIPlugin {
                     .with_system(title_despawn_curried(&*START_TITLE_RES_MAP)),
             )
             .add_system_set(SystemSet::new().with_system(game_exit_button_event));
+    }
+
+    fn name(&self) -> &str {
+        "wgse_ui"
     }
 }
 

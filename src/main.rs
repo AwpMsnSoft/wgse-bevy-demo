@@ -38,7 +38,8 @@ fn main() {
             debug!("Create window: {:?}", windows.get_primary().unwrap());
         })
         .add_plugins(DefaultPlugins)
-        .add_plugin(ui::main::UIPlugin)
+        .add_plugin(ui::main::UiPlugin)
+        .add_plugin(script::main::ScriptPlugin)
         .add_startup_system(setup)
         .run();
 }

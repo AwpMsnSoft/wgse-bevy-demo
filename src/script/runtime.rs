@@ -1,6 +1,6 @@
 use crate::script::commands as wgs;
 use crate::script::resources::WgsScript;
-use bevy::{asset::AssetPath, prelude::*, reflect::TypeUuid};
+use bevy::{prelude::*, reflect::TypeUuid};
 
 /// Registers of current wgs script context.
 #[derive(Debug, Default, Clone, Copy, Hash, PartialEq, Eq)]
@@ -32,13 +32,14 @@ pub struct WgsContext {
 impl WgsContext {
     pub fn init(scripts: Res<Assets<WgsScript>>) -> Self {
         Self {
+            // TODO: set init script's path by `WgsScriptSettings` resource.
             script: scripts.get_handle("script/init.wgs").clone_weak(),
             registers: WgsRegisters::default(),
         }
     }
 
-    pub fn load(&mut self, script: Handle<WgsScript>) {
-        self.script = script; // TODO: check if the script is parsed or not.
+    pub fn load(&mut self, path: &str, scripts: Res<Assets<WgsScript>>) {
+        self.script = scripts.get_handle(path).clone_weak();
         self.registers.reset();
     }
 }
@@ -61,22 +62,16 @@ impl WgsVirtualMachine {
             context: contexts.add(WgsContext::init(scripts)),
         }
     }
+}
 
-    pub fn load(
-        &mut self,
-        next: EventReader<wgs::Chain>,
-        scripts: Res<Assets<WgsScript>>,
-        mut contexts: ResMut<Assets<WgsContext>>,
-    ) {
-        let mut context = contexts.get_mut(self.context).unwrap();
-        if let Some(path) = next.iter().last() {
-            context.load(scripts.get_handle(path.next).clone_weak());
-        }
-    }
-
-    pub fn next(&mut self, mut trigger: EventReader<wgs::Next>) {
-        for _ in trigger.iter() {
-            todo!()
-        }
-    }
+pub fn exec(
+    vm_query: Query<&WgsVirtualMachine>,
+    mut contexts: ResMut<Assets<WgsContext>>,
+    scripts: Res<Assets<WgsScript>>,
+) {
+    let virtual_machine = vm_query.single();
+    let context = contexts
+        .get_mut(virtual_machine.context.clone_weak())
+        .unwrap();
+    let script = scripts.get(context.script.clone_weak()).unwrap();
 }
