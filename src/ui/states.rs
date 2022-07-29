@@ -113,13 +113,13 @@ lazy_static! {
 lazy_static! {
     pub static ref START_TITLE_BUTTON_STATE_MAP: HashMap<WidgetId, UiButtonState> = {
         let mut map = HashMap::new();
-        // map.insert(
-        //     START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID,
-        //     UiButtonState::from((
-        //         MainTitleState::Start.into(),
-        //         None,
-        //     )),
-        // );
+        map.insert(
+            START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID,
+            UiButtonState::from((
+                MainTitleState::Start.into(),
+                None,
+            )),
+        );
         map
     };
 }

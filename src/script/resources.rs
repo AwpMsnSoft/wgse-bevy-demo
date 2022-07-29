@@ -42,15 +42,8 @@ impl WgsScript {
         } else {
             let mut script = WgsScript::default();
             for line in String::from_utf8(bytes.to_vec()).unwrap().lines() {
-                // No argument command
-                if let Ok(command) = scanf!(line, ".{}", String) {
-                    script.0.commands.push(WgsCommand {
-                        command,
-                        args: vec![],
-                    });
-                }
                 // With argument command
-                else if let Ok((command, args)) = scanf!(line, ".{} {}", String, String) {
+                if let Ok((command, args)) = scanf!(line, ".{} {}", String, String) {
                     script.0.commands.push(WgsCommand {
                         command: command.clone(),
                         args: args.split_whitespace().map(|s| s.to_string()).collect(),
@@ -59,17 +52,25 @@ impl WgsScript {
                     if command == String::from("label") {
                         let (_, label) = scanf!(line, ".{} {}", String, String).unwrap();
                         script
-                            .0
-                            .label_map
-                            .0
-                            .insert(label, script.0.commands.len() - 1);
+                        .0
+                        .label_map
+                        .0
+                        .insert(label, script.0.commands.len() - 1);
                     }
+                }
+                // No argument command
+                else if let Ok(command) = scanf!(line, ".{}", String) {
+                    script.0.commands.push(WgsCommand {
+                        command,
+                        args: vec![],
+                    });
                 }
                 // Parse failed
                 else {
                     return Err(anyhow!("Parse failed: {}", line));
                 }
             }
+            debug!("script parsed as: {:?}", script);
             Ok(script)
         }
     }
@@ -96,5 +97,19 @@ impl AssetLoader for WgsScriptLoader {
     // file extensions
     fn extensions(&self) -> &[&str] {
         &["wgs"]
+    }
+}
+
+#[derive(Component, Debug)]
+pub struct WgsScriptResources;
+
+impl WgsScriptResources {
+    pub fn new(asset_server: &AssetServer) {
+        // let _ = asset_server.load_folder("script").or_else(|err| {
+        //     error!("Failed to load script folder! Error: {}", err);
+        //     Err(err)
+        // });
+        let handle: Handle<WgsScript> = asset_server.load("script/init.wgs");
+        debug!("Loaded script/init.wgs, handle: {:?}", handle);
     }
 }

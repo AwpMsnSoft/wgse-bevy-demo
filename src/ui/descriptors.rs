@@ -1,4 +1,7 @@
-use bevy::prelude::*;
+use bevy::{
+    prelude::*,
+    text::{Text2dBounds, Text2dSize},
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Component, PartialEq, Eq, Hash)]
@@ -71,7 +74,7 @@ pub fn widget_descriptor_spawn(parent: &mut ChildBuilder, descriptor: &Descripto
             debug!("Spawning text {:?}: {:?}", descriptor.id, text);
             parent.spawn_bundle(WidgetBundle {
                 id: WidgetId(descriptor.id),
-                children: TextBundle::from(text.clone()),
+                children: CustomTextBundle::from(text.clone()),
             })
         }
         _ => panic!("Current WidgetDescriptor is not supported yet."),
@@ -197,37 +200,62 @@ pub struct TextDescriptor {
     pub font: FontSettings,
 }
 
-impl From<TextDescriptor> for TextBundle {
+#[derive(Bundle, Debug, Default, Clone)]
+pub struct CustomTextBundle {
+    #[bundle]
+    pub text: Text2dBundle,
+    pub node: Node,
+}
+
+impl From<TextDescriptor> for CustomTextBundle {
     fn from(descriptor: TextDescriptor) -> Self {
         Self {
-            style: Style {
-                size: Size {
-                    width: Val::Px(descriptor.size.x),
-                    height: Val::Px(descriptor.size.y),
+            // style: Style {
+            //     size: Size {
+            //         width: Val::Px(descriptor.size.x),
+            //         height: Val::Px(descriptor.size.y),
+            //     },
+            //     max_size: Size {
+            //         width: Val::Px(descriptor.size.x),
+            //         height: Val::Px(descriptor.size.y),
+            //     },
+            //     position_type: PositionType::Relative,
+            //     position: Rect {
+            //         left: Val::Px(descriptor.position.x),
+            //         right: Val::Px(descriptor.position.x + descriptor.size.x),
+            //         top: Val::Px(descriptor.position.y),
+            //         bottom: Val::Px(descriptor.position.y - descriptor.size.y),
+            //     },
+            //     overflow: Overflow::Hidden,
+            //     ..Default::default()
+            // },
+            text: Text2dBundle {
+                text: Text::with_section(
+                    "",
+                    TextStyle {
+                        font_size: descriptor.font.size,
+                        color: Color::rgb(
+                            descriptor.font.color.x,
+                            descriptor.font.color.y,
+                            descriptor.font.color.z,
+                        ),
+                        ..Default::default()
+                    },
+                    TextAlignment {
+                        vertical: VerticalAlign::Top,
+                        horizontal: HorizontalAlign::Left,
+                    },
+                ),
+                text_2d_bounds: Text2dBounds {
+                    size: Size::new(descriptor.size.x, descriptor.size.y),
                 },
-                position_type: PositionType::Absolute,
-                position: Rect {
-                    left: Val::Px(descriptor.position.x),
-                    right: Val::Px(descriptor.position.x + descriptor.size.x),
-                    top: Val::Px(descriptor.position.y),
-                    bottom: Val::Px(descriptor.position.y - descriptor.size.y),
+                text_2d_size: Text2dSize {
+                    size: Size::new(descriptor.size.x, descriptor.size.y),
                 },
-                ..Default::default()
+                transform: Transform::from_xyz(descriptor.position.x, descriptor.position.y, 0.0),
+                ..default()
             },
-            text: Text::with_section(
-                "",
-                TextStyle {
-                    font_size: descriptor.font.size,
-                    color: Color::rgb(
-                        descriptor.font.color.x,
-                        descriptor.font.color.y,
-                        descriptor.font.color.z,
-                    ),
-                    ..Default::default()
-                },
-                Default::default(),
-            ),
-            ..Default::default()
+            ..default()
         }
     }
 }

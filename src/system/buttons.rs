@@ -22,7 +22,7 @@ pub fn ui_button_event_curried(
                             visibility.is_visible = true;
                         }
                         Interaction::None => {
-                            visibility.is_visible = false;
+                            visibility.is_visible = true;
                         }
                         Interaction::Clicked => {
                             if let Some(next_state) = &button_state.turning_into {

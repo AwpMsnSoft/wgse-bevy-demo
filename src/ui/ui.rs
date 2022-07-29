@@ -61,16 +61,17 @@ lazy_static! {
             descriptor!(
                 START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID.0,
                 WidgetDescriptor::button(button!((787.0, 142.0), (13.0, WINDOW_HEIGHT - 450.0))),
-                Some(GroupDescriptor(vec![descriptor!(
-                    START_TITLE_DIALOG_TEXTBOX_GUID.0,
-                    WidgetDescriptor::text(text!(
-                        (787.0, 142.0),
-                        (13.0, WINDOW_HEIGHT - 450.0),
-                        20.0,
-                        (255.0, 255.0, 255.0)
-                    )),
-                    None
-                )]))
+                None
+            ),
+            descriptor!(
+                START_TITLE_DIALOG_TEXTBOX_GUID.0,
+                WidgetDescriptor::text(text!(
+                    (687.0, 142.0),
+                    (63.0, WINDOW_HEIGHT - 450.0),
+                    25.0,
+                    (255.0, 255.0, 255.0)
+                )),
+                None
             )
         ]))
     )];
