@@ -1,7 +1,7 @@
 use crate::{
     script::commands as wgs,
     ui::{
-        descriptors::{Descriptor, TextDescriptor, WidgetId},
+        descriptors::WidgetId,
         resources::{
             FontResources, START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID,
             START_TITLE_DIALOG_TEXTBOX_GUID, START_TITLE_NAME_TEXTBOX_GUID,
@@ -30,7 +30,7 @@ pub fn dialog_textbox_button_system(
 }
 
 pub fn dialog_textbox_name_system(
-    mut text_query: Query<(&mut Text, &WidgetId), With<Parent>>,
+    mut text_query: Query<(&mut Text, &WidgetId)>,
     ui_state: Res<State<UiState>>,
     font: Res<FontResources>,
     mut command: EventReader<wgs::Message>,
@@ -40,29 +40,30 @@ pub fn dialog_textbox_name_system(
             && widget_id == &START_TITLE_NAME_TEXTBOX_GUID
         {
             if let Some(message) = command.iter().last() {
-                info!("Getting name from script, message: {}", message.chara);
                 text.sections[0].value = message.chara.clone();
                 text.sections[0].style.font = font.0.clone();
+                text.alignment = TextAlignment {
+                    vertical: VerticalAlign::Center,
+                    horizontal: HorizontalAlign::Center,
+                };
             }
         }
     }
 }
 
 pub fn dialog_textbox_text_system(
-    mut text_query: Query<(&mut Text, &Style, &WidgetId), With<Parent>>,
+    mut text_query: Query<(&mut Text, &WidgetId)>,
     ui_state: Res<State<UiState>>,
     font: Res<FontResources>,
     mut command: EventReader<wgs::Message>,
 ) {
-    for (mut text, style, widget_id) in text_query.iter_mut() {
+    for (mut text, widget_id) in text_query.iter_mut() {
         if ui_state.current() == &UiState::from(MainTitleState::Start)
             && widget_id == &START_TITLE_DIALOG_TEXTBOX_GUID
         {
             if let Some(message) = command.iter().last() {
-                info!("Getting dialog from script, message: {}", message.message);
                 text.sections[0].value = message.message.clone();
                 text.sections[0].style.font = font.0.clone();
-                info!("Text: {:?}", (text, style));
             }
         }
     }

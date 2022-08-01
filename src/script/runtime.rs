@@ -103,7 +103,7 @@ pub fn wgse_event_dispatcher(
             }),
             WgsEvent::Message(cmd) => message.send(wgs::Message {
                 chara: scanf!(cmd.args[0], "@{}", String).unwrap(),
-                message: scanf!(cmd.args[1], "\"{}\"", String).unwrap(),
+                message: cmd.args.iter().skip(1).fold(String::new(), |acc, x| acc + x + " "),
             }),
         }
     }

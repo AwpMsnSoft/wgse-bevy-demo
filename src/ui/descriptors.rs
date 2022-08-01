@@ -70,13 +70,6 @@ pub fn widget_descriptor_spawn(parent: &mut ChildBuilder, descriptor: &Descripto
                 children: ImageBundle::from(image.clone()),
             })
         }
-        WidgetDescriptor::text(text) => {
-            debug!("Spawning text {:?}: {:?}", descriptor.id, text);
-            parent.spawn_bundle(WidgetBundle {
-                id: WidgetId(descriptor.id),
-                children: CustomTextBundle::from(text.clone()),
-            })
-        }
         _ => panic!("Current WidgetDescriptor is not supported yet."),
     };
     // Spawn children widgets (if any)
@@ -200,61 +193,32 @@ pub struct TextDescriptor {
     pub font: FontSettings,
 }
 
-#[derive(Bundle, Debug, Default, Clone)]
-pub struct CustomTextBundle {
-    #[bundle]
-    pub text: Text2dBundle,
-    pub node: Node,
-}
-
-impl From<TextDescriptor> for CustomTextBundle {
+impl From<TextDescriptor> for Text2dBundle {
     fn from(descriptor: TextDescriptor) -> Self {
         Self {
-            // style: Style {
-            //     size: Size {
-            //         width: Val::Px(descriptor.size.x),
-            //         height: Val::Px(descriptor.size.y),
-            //     },
-            //     max_size: Size {
-            //         width: Val::Px(descriptor.size.x),
-            //         height: Val::Px(descriptor.size.y),
-            //     },
-            //     position_type: PositionType::Relative,
-            //     position: Rect {
-            //         left: Val::Px(descriptor.position.x),
-            //         right: Val::Px(descriptor.position.x + descriptor.size.x),
-            //         top: Val::Px(descriptor.position.y),
-            //         bottom: Val::Px(descriptor.position.y - descriptor.size.y),
-            //     },
-            //     overflow: Overflow::Hidden,
-            //     ..Default::default()
-            // },
-            text: Text2dBundle {
-                text: Text::with_section(
-                    "",
-                    TextStyle {
-                        font_size: descriptor.font.size,
-                        color: Color::rgb(
-                            descriptor.font.color.x,
-                            descriptor.font.color.y,
-                            descriptor.font.color.z,
-                        ),
-                        ..Default::default()
-                    },
-                    TextAlignment {
-                        vertical: VerticalAlign::Top,
-                        horizontal: HorizontalAlign::Left,
-                    },
-                ),
-                text_2d_bounds: Text2dBounds {
-                    size: Size::new(descriptor.size.x, descriptor.size.y),
+            text: Text::with_section(
+                "",
+                TextStyle {
+                    font_size: descriptor.font.size,
+                    color: Color::rgb(
+                        descriptor.font.color.x,
+                        descriptor.font.color.y,
+                        descriptor.font.color.z,
+                    ),
+                    ..Default::default()
                 },
-                text_2d_size: Text2dSize {
-                    size: Size::new(descriptor.size.x, descriptor.size.y),
+                TextAlignment {
+                    vertical: VerticalAlign::Top,
+                    horizontal: HorizontalAlign::Left,
                 },
-                transform: Transform::from_xyz(descriptor.position.x, descriptor.position.y, 0.0),
-                ..default()
+            ),
+            text_2d_bounds: Text2dBounds {
+                size: Size::new(descriptor.size.x - 10.0, descriptor.size.y - 10.0),
             },
+            text_2d_size: Text2dSize {
+                size: Size::new(descriptor.size.x - 10.0, descriptor.size.y - 10.0),
+            },
+            transform: Transform::from_xyz(descriptor.position.x, descriptor.position.y, 0.0),
             ..default()
         }
     }

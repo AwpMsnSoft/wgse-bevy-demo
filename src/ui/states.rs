@@ -10,7 +10,7 @@ use std::collections::HashMap;
 pub enum MainTitleState {
     Main,
     Start,
-    Config,
+    _Config,
     Extra,
 }
 

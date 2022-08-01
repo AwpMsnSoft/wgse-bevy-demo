@@ -109,5 +109,6 @@ pub struct FontResources(pub Handle<Font>);
 impl FontResources {
     pub fn new(asset_server: &AssetServer) -> Self {
         FontResources(asset_server.load("fonts/YuanRouHeiTi.ttf"))
+        // FontResources(asset_server.load("fonts/Ubuntu-MI.ttf"))
     }
 }

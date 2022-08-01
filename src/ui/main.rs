@@ -1,16 +1,24 @@
 use std::collections::HashMap;
 
 use super::{
-    descriptors::Descriptor,
-    resources::{UiImageResources, MAIN_TITLE_RES_MAP, START_TITLE_RES_MAP},
+    resources::{
+        UiImageResources, MAIN_TITLE_RES_MAP, START_TITLE_DIALOG_TEXTBOX_GUID,
+        START_TITLE_NAME_TEXTBOX_GUID, START_TITLE_RES_MAP,
+    },
     states::{MainTitleState, UiState, MAIN_TITLE_BUTTON_STATE_MAP, START_TITLE_BUTTON_STATE_MAP},
-    ui::{MAIN_TITLE_LAYOUT, START_TITLE_LAYOUT},
+    ui::{MAIN_TITLE_LAYOUT, START_TITLE_LAYOUT, WINDOW_HEIGHT},
 };
 use crate::{
     system::buttons::{game_exit_button_event, ui_button_event_curried},
-    ui::descriptors::{widget_descriptor_spawn, WidgetId},
+    text,
+    ui::descriptors::{
+        widget_descriptor_spawn, Descriptor, FontSettings, TextDescriptor, WidgetId,
+    },
 };
-use bevy::{prelude::*, render::texture::DEFAULT_IMAGE_HANDLE};
+use bevy::{
+    prelude::*,
+    render::{camera::WindowOrigin, texture::DEFAULT_IMAGE_HANDLE},
+};
 
 #[derive(Debug)]
 pub struct UiPlugin;
@@ -35,7 +43,9 @@ impl Plugin for UiPlugin {
             // In-game ui
             .add_system_set(
                 SystemSet::on_enter(UiState::from(MainTitleState::Start))
-                    .with_system(title_spawn_curried(&*START_TITLE_LAYOUT)),
+                    .with_system(title_spawn_curried(&*START_TITLE_LAYOUT))
+                    .with_system(start_title_text_bundle_spawn.label("start_title_ui_system"))
+                    .with_system(change_origin.after("start_title_ui_system")),
             )
             .add_system_set(
                 SystemSet::on_update(UiState::from(MainTitleState::Start))
@@ -67,6 +77,33 @@ fn title_spawn_curried(layout: &'static Vec<Descriptor>) -> impl Fn(Commands, Re
                 widget_descriptor_spawn(title, descriptor);
             });
         }
+    }
+}
+
+// TODO: Text2dBundle CANNOT be added with UiBundle
+fn start_title_text_bundle_spawn(mut commands: Commands) {
+    commands
+        .spawn_bundle(Text2dBundle::from(text!(
+            (540.0, 90.0),
+            (60.0, WINDOW_HEIGHT - 470.0),
+            28.0,
+            (255.0, 255.0, 255.0)
+        )))
+        .insert(START_TITLE_DIALOG_TEXTBOX_GUID);
+    commands
+        .spawn_bundle(Text2dBundle::from(text!(
+            (125.0, 35.0),
+            // (55.0, WINDOW_HEIGHT - 390.0),
+            (127.5, WINDOW_HEIGHT - 407.5), // Center the text
+            24.0,
+            (255.0, 255.0, 255.0)
+        )))
+        .insert(START_TITLE_NAME_TEXTBOX_GUID);
+}
+
+fn change_origin(mut query: Query<&mut OrthographicProjection>) {
+    for mut orth in query.iter_mut() {
+        orth.window_origin = WindowOrigin::BottomLeft;
     }
 }
 

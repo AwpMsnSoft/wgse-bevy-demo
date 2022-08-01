@@ -26,6 +26,8 @@ fn main() {
             WindowDescriptor {
                 width: WINDOW_WIDTH,
                 height: WINDOW_HEIGHT,
+                title: String::from("何処へ行くの、あの日"),
+                scale_factor_override: Some(2.0),
                 ..Default::default()
             }
         })

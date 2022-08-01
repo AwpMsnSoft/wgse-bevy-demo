@@ -1,9 +1,9 @@
 use crate::{
-    button, descriptor, image, text,
+    button, descriptor, image,
     ui::{
         descriptors::{
-            ButtonDescriptor, Descriptor, FontSettings, GroupDescriptor, ImageDescriptor,
-            TextDescriptor, WidgetDescriptor,
+            ButtonDescriptor, Descriptor, GroupDescriptor, ImageDescriptor,
+            WidgetDescriptor,
         },
         resources::*,
     },
@@ -49,30 +49,10 @@ lazy_static! {
         WidgetDescriptor::image(image!((WINDOW_WIDTH, WINDOW_HEIGHT), (0.0, WINDOW_HEIGHT))),
         Some(GroupDescriptor(vec![
             descriptor!(
-                START_TITLE_NAME_TEXTBOX_GUID.0,
-                WidgetDescriptor::text(text!(
-                    (187.0, 52.0),
-                    (17.0, WINDOW_HEIGHT - 382.0),
-                    20.0,
-                    (255.0, 255.0, 255.0)
-                )),
-                None
-            ),
-            descriptor!(
                 START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID.0,
                 WidgetDescriptor::button(button!((787.0, 142.0), (13.0, WINDOW_HEIGHT - 450.0))),
                 None
             ),
-            descriptor!(
-                START_TITLE_DIALOG_TEXTBOX_GUID.0,
-                WidgetDescriptor::text(text!(
-                    (687.0, 142.0),
-                    (63.0, WINDOW_HEIGHT - 450.0),
-                    25.0,
-                    (255.0, 255.0, 255.0)
-                )),
-                None
-            )
         ]))
     )];
 }
