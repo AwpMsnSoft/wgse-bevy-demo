@@ -98,7 +98,7 @@ impl From<ButtonDescriptor> for ButtonBundle {
                     height: Val::Px(descriptor.size.y),
                 },
                 position_type: PositionType::Absolute,
-                position: Rect {
+                position: UiRect {
                     left: Val::Px(descriptor.position.x),
                     right: Val::Px(descriptor.position.x + descriptor.size.x),
                     top: Val::Px(descriptor.position.y),
@@ -106,7 +106,6 @@ impl From<ButtonDescriptor> for ButtonBundle {
                 },
                 ..Default::default()
             },
-            visibility: Visibility { is_visible: false },
             ..Default::default()
         }
     }
@@ -150,7 +149,7 @@ impl From<ImageDescriptor> for ImageBundle {
                     height: Val::Px(descriptor.size.y),
                 },
                 position_type: PositionType::Absolute,
-                position: Rect {
+                position: UiRect {
                     left: Val::Px(descriptor.position.x),
                     right: Val::Px(descriptor.position.x + descriptor.size.x),
                     top: Val::Px(descriptor.position.y),
@@ -196,7 +195,7 @@ pub struct TextDescriptor {
 impl From<TextDescriptor> for Text2dBundle {
     fn from(descriptor: TextDescriptor) -> Self {
         Self {
-            text: Text::with_section(
+            text: Text::from_section(
                 "",
                 TextStyle {
                     font_size: descriptor.font.size,
@@ -207,16 +206,16 @@ impl From<TextDescriptor> for Text2dBundle {
                     ),
                     ..Default::default()
                 },
-                TextAlignment {
-                    vertical: VerticalAlign::Top,
-                    horizontal: HorizontalAlign::Left,
-                },
-            ),
+            )
+            .with_alignment(TextAlignment {
+                vertical: VerticalAlign::Top,
+                horizontal: HorizontalAlign::Left,
+            }),
             text_2d_bounds: Text2dBounds {
-                size: Size::new(descriptor.size.x - 10.0, descriptor.size.y - 10.0),
+                size: Vec2::new(descriptor.size.x - 10.0, descriptor.size.y - 10.0),
             },
             text_2d_size: Text2dSize {
-                size: Size::new(descriptor.size.x - 10.0, descriptor.size.y - 10.0),
+                size: Vec2::new(descriptor.size.x - 10.0, descriptor.size.y - 10.0),
             },
             transform: Transform::from_xyz(descriptor.position.x, descriptor.position.y, 0.0),
             ..default()

@@ -34,7 +34,7 @@ impl Plugin for UiPlugin {
             .add_system_set(
                 SystemSet::on_update(UiState::from(MainTitleState::Main))
                     .with_system(title_load_images_curried(&*MAIN_TITLE_RES_MAP))
-                    .with_system(ui_button_event_curried(&*MAIN_TITLE_BUTTON_STATE_MAP)),
+                    .with_system(ui_button_event_curried(&*MAIN_TITLE_BUTTON_STATE_MAP, &*MAIN_TITLE_RES_MAP)),
             )
             .add_system_set(
                 SystemSet::on_exit(UiState::from(MainTitleState::Main))
@@ -50,7 +50,7 @@ impl Plugin for UiPlugin {
             .add_system_set(
                 SystemSet::on_update(UiState::from(MainTitleState::Start))
                     .with_system(title_load_images_curried(&*START_TITLE_RES_MAP))
-                    .with_system(ui_button_event_curried(&*START_TITLE_BUTTON_STATE_MAP)),
+                    .with_system(ui_button_event_curried(&*START_TITLE_BUTTON_STATE_MAP, &*START_TITLE_RES_MAP)),
             )
             .add_system_set(
                 SystemSet::on_exit(UiState::from(MainTitleState::Start))

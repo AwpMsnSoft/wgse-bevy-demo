@@ -27,7 +27,7 @@ fn main() {
                 width: WINDOW_WIDTH,
                 height: WINDOW_HEIGHT,
                 title: String::from("何処へ行くの、あの日"),
-                scale_factor_override: Some(2.0),
+                resizable: false,
                 ..Default::default()
             }
         })
@@ -49,8 +49,7 @@ fn main() {
 }
 
 fn setup(mut command: Commands, asset_server: Res<AssetServer>) {
-    command.spawn_bundle(UiCameraBundle::default());
-    command.spawn_bundle(OrthographicCameraBundle::new_2d());
+    command.spawn_bundle(Camera2dBundle::default());
     command.insert_resource(UiImageResources::new(&asset_server));
     command.insert_resource(FontResources::new(&asset_server));
     command.insert_resource(WgsScriptResources::new(&asset_server));

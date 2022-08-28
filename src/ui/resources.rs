@@ -15,6 +15,7 @@ impl UiImageResources {
             for (_, &path) in res {
                 image_map.insert(path, asset_server.load(path));
             }
+        image_map.insert("default.png", asset_server.load("pictures/button/default.png"));
         }
         UiImageResources(image_map)
     }
