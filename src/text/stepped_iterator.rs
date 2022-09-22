@@ -1,67 +1,44 @@
 use std::str::Chars;
 
-#[derive(Clone)]
-pub(crate) struct SteppedIter<I, Ad> {
-    pub(crate) iter: I,
-    pub(crate) advancer: Ad,
-}
-
-impl<I, Ad> Iterator for SteppedIter<I, Ad>
-where
-    I: Iterator,
-    Ad: Fn(&I::Item) -> usize,
-{
-    type Item = <I as Iterator>::Item;
-    fn next(&mut self) -> Option<Self::Item> {
-        self.iter.next()
-    }
-}
-
-pub(crate) trait SteppedIterator<I, Ad>
+pub(crate) trait SteppedIterator
 where
     Self: Iterator,
-    I: Iterator,
-    Ad: Fn(&I::Item) -> usize,
 {
-    fn take_stepped(self, n: usize) -> TakeStepped<I, Ad>;
-    fn skip_stepped(self, n: usize) -> SkipStepped<I, Ad>;
-}
+    fn advance_stepped(t: &<Self as Iterator>::Item) -> usize;
 
-impl<I, Ad> SteppedIterator<I, Ad> for SteppedIter<I, Ad>
-where
-    I: Iterator,
-    Ad: Fn(&I::Item) -> usize,
-{
-    fn take_stepped(self, n: usize) -> TakeStepped<I, Ad> {
-        TakeStepped::<I, Ad>::new(self.iter, n, self.advancer)
+    fn take_stepped(self, n: usize) -> TakeStepped<Self>
+    where
+        Self: Sized,
+    {
+        TakeStepped::new(self, n)
     }
 
-    fn skip_stepped(self, n: usize) -> SkipStepped<I, Ad> {
-        SkipStepped::<I, Ad>::new(self.iter, n, self.advancer)
+    fn skip_stepped(self, n: usize) -> SkipStepped<Self>
+    where
+        Self: Sized,
+    {
+        SkipStepped::new(self, n)
     }
 }
 
 #[derive(Clone)]
-pub(crate) struct TakeStepped<I, Ad> {
+pub(crate) struct TakeStepped<I> {
     pub(crate) iter: I,
     pub(crate) n: usize,
-    pub(crate) advancer: Ad,
 }
 
-impl<I, Ad> TakeStepped<I, Ad>
+impl<I> TakeStepped<I>
 where
-    I: Iterator,
-    Ad: Fn(&I::Item) -> usize,
+    I: SteppedIterator,
 {
-    pub(crate) fn new(iter: I, n: usize, advancer: Ad) -> Self {
-        Self { iter, n, advancer }
+    pub(crate) fn new(iter: I, n: usize) -> Self {
+        Self { iter, n }
     }
 }
 
-impl<I, Ad> Iterator for TakeStepped<I, Ad>
+impl<I> Iterator for TakeStepped<I>
 where
-    I: Iterator,
-    Ad: Fn(&I::Item) -> usize,
+    I: SteppedIterator,
 {
     type Item = <I as Iterator>::Item;
     fn next(&mut self) -> Option<Self::Item> {
@@ -69,51 +46,42 @@ where
             if self.n == 0 {
                 return None;
             }
-            self.n = self.n.saturating_sub((self.advancer)(&item));
+            self.n = self.n.saturating_sub(I::advance_stepped(&item));
             return Some(item);
         }
         None
     }
 }
 
-impl<I, Ad> SteppedIterator<I, Ad> for TakeStepped<I, Ad>
+impl<I> SteppedIterator for TakeStepped<I>
 where
-    I: Iterator,
-    Ad: Fn(&I::Item) -> usize,
+    I: SteppedIterator,
 {
-    fn take_stepped(self, n: usize) -> TakeStepped<I, Ad> {
-        TakeStepped::new(self.iter, n, self.advancer)
-    }
-
-    fn skip_stepped(self, n: usize) -> SkipStepped<I, Ad> {
-        SkipStepped::new(self.iter, n, self.advancer)
+    fn advance_stepped(t: &<Self as Iterator>::Item) -> usize {
+        I::advance_stepped(t)
     }
 }
 
 #[derive(Clone)]
-pub(crate) struct SkipStepped<I, Ad> {
+pub(crate) struct SkipStepped<I> {
     pub(crate) iter: I,
     pub(crate) n: usize,
-    pub(crate) advancer: Ad,
 }
 
-impl<I, Ad> SkipStepped<I, Ad>
+impl<I> SkipStepped<I>
 where
-    I: Iterator,
-    Ad: Fn(&I::Item) -> usize,
+    I: SteppedIterator,
 {
-    pub(crate) fn new(iter: I, n: usize, advancer: Ad) -> Self {
-        Self { iter, n, advancer }
+    pub(crate) fn new(iter: I, n: usize) -> Self {
+        Self { iter, n }
     }
 }
 
-impl<I, Ad> Iterator for SkipStepped<I, Ad>
+impl<I> Iterator for SkipStepped<I>
 where
-    I: Iterator,
-    Ad: Fn(&I::Item) -> usize,
+    I: SteppedIterator,
 {
     type Item = <I as Iterator>::Item;
-
     fn next(&mut self) -> Option<Self::Item> {
         #[inline]
         fn check<'a, T>(
@@ -129,41 +97,55 @@ where
                 }
             }
         }
-        self.iter.find(check(&mut self.n, &self.advancer))
+        self.iter.find(check(&mut self.n, &I::advance_stepped))
     }
 }
 
-impl<I, Ad> SteppedIterator<I, Ad> for SkipStepped<I, Ad>
+impl<I> SteppedIterator for SkipStepped<I>
 where
-    I: Iterator,
-    Ad: Fn(&I::Item) -> usize,
+    I: SteppedIterator,
 {
-    fn take_stepped(self, n: usize) -> TakeStepped<I, Ad> {
-        TakeStepped::new(self.iter, n, self.advancer)
-    }
-
-    fn skip_stepped(self, n: usize) -> SkipStepped<I, Ad> {
-        SkipStepped::new(self.iter, n, self.advancer)
+    fn advance_stepped(t: &<Self as Iterator>::Item) -> usize {
+        I::advance_stepped(t)
     }
 }
 
-pub(crate) trait IntoSteppedIter<Ad>
-where
-    Self: Iterator + Sized,
-    Ad: Fn(&Self::Item) -> usize,
-{
-    fn into_stepped_iter(&mut self, advaner: Ad) -> SteppedIter<Self, Ad>;
+#[derive(Debug, Clone)]
+pub(crate) struct MonoChars<'a> {
+    pub(crate) iter: Chars<'a>,
 }
 
-impl<'a, Ad> IntoSteppedIter<Ad> for Chars<'a>
-where
-    Ad: Fn(&char) -> usize,
-{
-    fn into_stepped_iter(&mut self, advancer: Ad) -> SteppedIter<Self, Ad> {
-        // Clone original parsed UTF-8 string
-        SteppedIter {
-            iter: self.into_iter().to_owned(),
-            advancer,
+impl<'a> Iterator for MonoChars<'a> {
+    type Item = char;
+    fn next(&mut self) -> Option<Self::Item> {
+        self.iter.next()
+    }
+}
+
+impl<'a> SteppedIterator for MonoChars<'a> {
+    fn take_stepped(self, n: usize) -> TakeStepped<Self> {
+        TakeStepped::new(self, n)
+    }
+
+    fn skip_stepped(self, n: usize) -> SkipStepped<Self> {
+        SkipStepped::new(self, n)
+    }
+
+    fn advance_stepped(t: &<Self as Iterator>::Item) -> usize {
+        if t.is_ascii() {
+            1
+        } else {
+            2
         }
+    }
+}
+
+pub(crate) trait IntoMonoChars {
+    fn mono_chars(&mut self) -> MonoChars<'_>;
+}
+
+impl IntoMonoChars for String {
+    fn mono_chars(&mut self) -> MonoChars<'_> {
+        MonoChars { iter: self.chars() }
     }
 }

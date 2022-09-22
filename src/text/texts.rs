@@ -1,6 +1,6 @@
 use crate::{
     script::commands as wgs,
-    text::stepped_iterator::{IntoSteppedIter, SteppedIterator},
+    text::stepped_iterator::{IntoMonoChars, SteppedIterator},
     ui::{
         descriptors::WidgetId,
         resources::{
@@ -57,33 +57,21 @@ pub fn dialog_textbox_text_system(
     ui_state: Res<State<UiState>>,
     font: Res<FontResources>,
     mut command: EventReader<wgs::Message>,
-    mut timer: Local<Option<Timer>>,
-    mut cursor: Local<usize>,
-    time: Res<Time>,
 ) {
-    if let Some(timer) = &mut *timer {
-        for (mut text, widget_id) in text_query.iter_mut() {
-            if ui_state.current() == &UiState::from(MainTitleState::Start)
-                && widget_id == &START_TITLE_DIALOG_TEXTBOX_GUID
-            {
-                if timer.finished() {
-                    *cursor += 1;
-                }
-                if let Some(message) = command.iter().last() {
-                    text.sections[0].value = message
-                        .message
-                        .clone()
-                        .chars()
-                        .into_stepped_iter(|ch| if ch.is_ascii() { 1 } else { 2 })
-                        .take_stepped(*cursor)
-                        .skip_stepped(23)
-                        .collect();
-                    text.sections[0].style.font = font.0.clone();
-                }
-                timer.tick(time.delta());
+    for (mut text, widget_id) in text_query.iter_mut() {
+        if ui_state.current() == &UiState::from(MainTitleState::Start)
+            && widget_id == &START_TITLE_DIALOG_TEXTBOX_GUID
+        {
+            if let Some(message) = command.iter().last() {
+                text.sections[0].value = message
+                    .message
+                    .clone()
+                    .mono_chars()
+                    .take_stepped(10)
+                    .skip_stepped(5)
+                    .collect();
+                text.sections[0].style.font = font.0.clone();
             }
         }
-    } else {
-        *timer = Some(Timer::from_seconds(0.16, true));
     }
 }
