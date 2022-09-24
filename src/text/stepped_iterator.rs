@@ -120,6 +120,13 @@ impl<'a> Iterator for MonoChars<'a> {
     fn next(&mut self) -> Option<Self::Item> {
         self.iter.next()
     }
+
+    fn count(self) -> usize
+    where
+        Self: Sized,
+    {
+        self.fold(0, |cnt, ch| cnt + if ch.is_ascii() { 1 } else { 2 })
+    }
 }
 
 impl<'a> SteppedIterator for MonoChars<'a> {
@@ -141,11 +148,11 @@ impl<'a> SteppedIterator for MonoChars<'a> {
 }
 
 pub(crate) trait IntoMonoChars {
-    fn mono_chars(&mut self) -> MonoChars<'_>;
+    fn mono_chars(&self) -> MonoChars<'_>;
 }
 
 impl IntoMonoChars for String {
-    fn mono_chars(&mut self) -> MonoChars<'_> {
+    fn mono_chars(&self) -> MonoChars<'_> {
         MonoChars { iter: self.chars() }
     }
 }

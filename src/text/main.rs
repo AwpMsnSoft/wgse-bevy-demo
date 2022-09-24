@@ -1,5 +1,9 @@
-use crate::text::texts::{
-    dialog_textbox_button_system, dialog_textbox_name_system, dialog_textbox_text_system,
+use crate::text::{
+    states::TextRenderingState,
+    texts::{
+        dialog_textbox_button_system, dialog_textbox_name_system, dialog_textbox_text_system,
+        dialog_textbox_text_trigger,
+    },
 };
 use bevy::prelude::*;
 
@@ -8,8 +12,10 @@ pub struct TextPlugin;
 
 impl Plugin for TextPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(dialog_textbox_button_system)
+        app.add_state(TextRenderingState::Done)
+            .add_system(dialog_textbox_button_system)
             .add_system(dialog_textbox_name_system)
+            .add_system(dialog_textbox_text_trigger)
             .add_system(dialog_textbox_text_system);
     }
 

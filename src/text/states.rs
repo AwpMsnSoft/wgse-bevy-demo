@@ -1,10 +1,7 @@
-use bevy::prelude::*;
-use crate::text::stepped_iterator::MonoChars;
 
-#[derive(Debug, Clone)]
-pub(crate) enum TextRenderingState<'a> {
+#[derive(Debug, Clone, Hash, Eq, PartialEq)]
+pub enum TextRenderingState {
     Pendding(String),
-    Rendering(MonoChars<'a>),
+    Rendering,
     Done,
 }
-

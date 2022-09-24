@@ -1,7 +1,5 @@
-.message @测试 这是一句对话
-.message @测试2 这是一句对话2
-.message @测试3 这是一句对话3
-.message @测试4 这是一句很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的对话
-.message @テースト 这是一句对话 这是一句对话 这是一句对话 这是一句对话 这是一句对话 这是一句对话 这是一句对话
-.message @test This is a test This is a test This is a test This is a test This is a test
-.message @len_test 12345678901234567890123456789012345678901234567890 12345678901234567890123456789012345678901234567890 12345678901234567890123456789012345678901234567890 12345678901234567890123456789012345678901234567890
+.message @基础测试 这是一句对话
+.message @英文测试 this is a message.
+.message @日文测试 これはメッセージです。
+.message @长文字测试 “我们要积极回应人民群众所想、所盼、所急，大力推进生态文明建设，提供更多优质生态产品，不断满足人民日益增长的优美生态环境需要。” 党的十八大以来，以习近平同志为核心的党中央以前所未有的力度抓生态文明建设，全党全国推动绿色发展的自觉性和主动性显著增强，美丽中国建设迈出重大步伐，中华大地正展现出天蓝地绿水清的亮丽新景象。 “环境就是民生，青山就是美丽，蓝天也是幸福” 远眺山峦叠翠，近看碧波荡漾……秋日的苍山洱海，让人流连忘返。洱海是云南大理人的“母亲湖”，也曾因长期污染导致湖水富营养化。 2015年，习近平总书记来到洱海边，仔细察看生态保护湿地，听取洱海保护情况介绍，强调一定要把洱海保护好，让“苍山不墨千秋画，洱海无弦万古琴”的自然美景永驻人间。 经过系统治理，今年上半年，洱海水体透明度达到近10年最好水平。“当洱海在眼前一天天清澈起来，才理解保护生态环境的重要性。”大理古生村村民何利成的客栈一度被关停进行整改提升，恢复营业后迎来八方游客。
+.message @长单词英文测试 bevy_app::plugin_group: added plugin: bevy_core::CorePlugin 2022-09-24T07:17:23.430071Z DEBUG bevy_app::plugin_group: added plugin: bevy_time::TimePlugin 2022-09-24T07:17:23.431897Z DEBUG bevy_app::plugin_group: added plugin: bevy_transform::TransformPlugin 2022-09-24T07:17:23.432446Z DEBUG bevy_app::plugin_group: added plugin: bevy_hierarchy::HierarchyPlugin 2022-09-24T07:17:23.433142Z DEBUG bevy_app::plugin_group: added plugin: bevy_diagnostic::DiagnosticsPlugin 2022-09-24T07:17:23.433442Z DEBUG bevy_app::plugin_group: added plugin: bevy_input::InputPlugin 2022-09-24T07:17:23.433792Z DEBUG bevy_app::plugin_group: added plugin: bevy_window::WindowPlugin
