@@ -16,11 +16,13 @@ impl Plugin for ScriptPlugin {
             .add_event::<wgs::Chain>()
             .add_event::<wgs::Lable>()
             .add_event::<wgs::Next>()
+            .add_event::<wgs::Exit>()
             .add_event::<WgsEvent>()
             .add_startup_system(init_wgs_virtualmachine)
             .add_system(wgse_event_dispatcher)
             .add_system(wgs::wgse_command_system_next)
-            .add_system(wgs::wgse_command_system_chain);
+            .add_system(wgs::wgse_command_system_chain)
+            .add_system(wgs::wgse_command_system_exit);
     }
 
     fn name(&self) -> &str {

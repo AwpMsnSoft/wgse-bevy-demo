@@ -6,7 +6,7 @@ use crate::script::{
     resources::WgsScript,
     runtime::{WgsContext, WgsEvent, WgsVirtualMachine},
 };
-use bevy::prelude::*;
+use bevy::{app::AppExit, prelude::*};
 
 /// Show a dialog on given message box.
 ///
@@ -81,4 +81,18 @@ pub fn wgse_command_system_chain(
     if let Some(path) = next.iter().last() {
         context.load(&path.next, scripts);
     }
+}
+
+/// Exit the game process
+///
+/// ### format
+/// `.exit`
+pub struct Exit {}
+
+pub fn wgse_command_system_exit(
+    mut _query: Query<(&WgsVirtualMachine, &mut WgsContext)>,
+    mut trigger: EventReader<Exit>,
+    mut app_exit_event: EventWriter<AppExit>,
+) {
+    trigger.iter().for_each(|_| app_exit_event.send(AppExit));
 }

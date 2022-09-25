@@ -63,6 +63,7 @@ impl WgsVirtualMachine {
             "chain" => ev.send(WgsEvent::Chain(cmd)),
             "label" => ev.send(WgsEvent::Lable(cmd)),
             "next" => ev.send(WgsEvent::Next(cmd)),
+            "exit" => ev.send(WgsEvent::Exit(cmd)),
             _ => panic!("Unknown command: {}", cmd.command),
         }
     }
@@ -74,6 +75,7 @@ impl WgsVirtualMachine {
 pub enum WgsEvent {
     // no args event
     Lable(WgsCommand),
+    Exit(WgsCommand),
     // one arg event
     Next(WgsCommand),
     Chain(WgsCommand),
@@ -89,6 +91,7 @@ pub fn wgse_event_dispatcher(
     mut chain: EventWriter<wgs::Chain>,
     mut lable: EventWriter<wgs::Lable>,
     // mut next: EventWriter<wgs::Next>,
+    mut exit: EventWriter<wgs::Exit>,
 ) {
     for event in ev.iter() {
         debug!("Dispatching event: {:?}", event);
@@ -96,14 +99,19 @@ pub fn wgse_event_dispatcher(
             WgsEvent::Lable(cmd) => lable.send(wgs::Lable {
                 lable: cmd.args[0].clone(),
             }),
-            WgsEvent::Next(_) => (),/* actually do nothing */
+            WgsEvent::Next(_) => (), /* actually do nothing */
             // WgsEvent::Next(_) => next.send(wgs::Next {}),
+            WgsEvent::Exit(_) => exit.send(wgs::Exit {}),
             WgsEvent::Chain(cmd) => chain.send(wgs::Chain {
                 next: cmd.args[0].clone(),
             }),
             WgsEvent::Message(cmd) => message.send(wgs::Message {
                 chara: scanf!(cmd.args[0], "@{}", String).unwrap(),
-                message: cmd.args.iter().skip(1).fold(String::new(), |acc, x| acc + x + " "),
+                message: cmd
+                    .args
+                    .iter()
+                    .skip(1)
+                    .fold(String::new(), |acc, x| acc + x + " "),
             }),
         }
     }
