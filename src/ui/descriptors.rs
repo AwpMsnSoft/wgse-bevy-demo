@@ -195,18 +195,21 @@ pub struct TextDescriptor {
 impl From<TextDescriptor> for Text2dBundle {
     fn from(descriptor: TextDescriptor) -> Self {
         Self {
-            text: Text::from_section(
-                "",
-                TextStyle {
-                    font_size: descriptor.font.size,
-                    color: Color::rgb(
-                        descriptor.font.color.x,
-                        descriptor.font.color.y,
-                        descriptor.font.color.z,
-                    ),
-                    ..Default::default()
-                },
-            )
+            text: Text::from_sections(vec![
+                TextSection::new(
+                    "",
+                    TextStyle {
+                        font_size: descriptor.font.size,
+                        color: Color::rgb(
+                            descriptor.font.color.x,
+                            descriptor.font.color.y,
+                            descriptor.font.color.z,
+                        ),
+                        ..Default::default()
+                    },
+                );
+                4
+            ])
             .with_alignment(TextAlignment {
                 vertical: VerticalAlign::Top,
                 horizontal: HorizontalAlign::Left,
