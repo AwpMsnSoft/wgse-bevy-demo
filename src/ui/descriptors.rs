@@ -2,7 +2,7 @@ use bevy::{
     prelude::*,
     text::{Text2dBounds, Text2dSize},
 };
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, __private::de};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Component, PartialEq, Eq, Hash)]
 pub struct WidgetId(pub i32);
@@ -68,6 +68,13 @@ pub fn widget_descriptor_spawn(parent: &mut ChildBuilder, descriptor: &Descripto
             parent.spawn(WidgetBundle {
                 id: WidgetId(descriptor.id),
                 children: ImageBundle::from(image.clone()),
+            })
+        }
+        WidgetDescriptor::text(text) => {
+            debug!("Spawning text {:?}: {:?}", descriptor.id, text);
+            parent.spawn(WidgetBundle {
+                id: WidgetId(descriptor.id),
+                children: TextBundle::from(text.clone()),
             })
         }
         _ => panic!("Current WidgetDescriptor is not supported yet."),
@@ -190,6 +197,43 @@ pub struct TextDescriptor {
     pub position: Vec2,
     #[serde(default)]
     pub font: FontSettings,
+}
+
+impl From<TextDescriptor> for TextBundle {
+    fn from(descriptor: TextDescriptor) -> Self {
+        Self {
+            text: Text::from_sections(vec![
+                TextSection::new(
+                    "",
+                    TextStyle {
+                        font_size: descriptor.font.size,
+                        color: Color::rgb(
+                            descriptor.font.color.x,
+                            descriptor.font.color.y,
+                            descriptor.font.color.z,
+                        ),
+                        ..Default::default()
+                    },
+                );
+                4
+            ]),
+            style: Style {
+                position_type: PositionType::Absolute,
+                size: Size::new(
+                    Val::Px(descriptor.size.x - 10.0),
+                    Val::Px(descriptor.size.y - 10.0),
+                ),
+                position: UiRect {
+                    left: Val::Px(descriptor.position.x),
+                    top: Val::Px(descriptor.position.y),
+                    ..default()
+                },
+                ..default()
+            },
+            transform: Transform::from_xyz(descriptor.position.x, descriptor.position.y, 0.0),
+            ..default()
+        }
+    }
 }
 
 impl From<TextDescriptor> for Text2dBundle {

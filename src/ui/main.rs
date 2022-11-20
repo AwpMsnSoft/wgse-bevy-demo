@@ -1,18 +1,19 @@
 use crate::{
     system::buttons::{game_exit_button_event, ui_button_event_curried},
-    text,
     ui::{
-        descriptors::{
-            widget_descriptor_spawn, Descriptor, FontSettings, TextDescriptor, WidgetId,
-        },
+        descriptors::{widget_descriptor_spawn, Descriptor, WidgetId},
         resources::{
-            UiImageResources, MAIN_TITLE_RES_MAP, START_TITLE_DIALOG_TEXTBOX_GUID,
-            START_TITLE_NAME_TEXTBOX_GUID, START_TITLE_RES_MAP,
+            UiImageResources, CONFIG_SPEED_TITLE_RES_MAP, EXTRA_TITLE_RES_MAP, MAIN_TITLE_RES_MAP,
+            START_TITLE_RES_MAP,
         },
         states::{
-            MainTitleState, UiState, MAIN_TITLE_BUTTON_STATE_MAP, START_TITLE_BUTTON_STATE_MAP,
+            MainTitleState, UiState, CONFIG_SPEED_TITLE_BUTTON_STATE_MAP,
+            EXTRA_TITLE_BUTTON_STATE_MAP, MAIN_TITLE_BUTTON_STATE_MAP,
+            START_TITLE_BUTTON_STATE_MAP,
         },
-        ui::{MAIN_TITLE_LAYOUT, START_TITLE_LAYOUT, WINDOW_HEIGHT},
+        ui::{
+            CONFIG_SPEED_TITLE_LAYOUT, EXTRA_TITLE_LAYOUT, MAIN_TITLE_LAYOUT, START_TITLE_LAYOUT,
+        },
     },
 };
 use bevy::{
@@ -48,8 +49,8 @@ impl Plugin for UiPlugin {
             .add_system_set(
                 SystemSet::on_enter(UiState::from(MainTitleState::Start))
                     .with_system(title_spawn_curried(&*START_TITLE_LAYOUT))
-                    .with_system(start_title_text_bundle_spawn.label("start_title_ui_system"))
-                    .with_system(change_origin.after("start_title_ui_system")),
+                    // .with_system(start_title_text_bundle_spawn.label("start_title_ui_system"))
+                    .with_system(change_origin),
             )
             .add_system_set(
                 SystemSet::on_update(UiState::from(MainTitleState::Start))
@@ -62,6 +63,40 @@ impl Plugin for UiPlugin {
             .add_system_set(
                 SystemSet::on_exit(UiState::from(MainTitleState::Start))
                     .with_system(title_despawn_curried(&*START_TITLE_RES_MAP)),
+            )
+            // extra ui
+            .add_system_set(
+                SystemSet::on_enter(UiState::from(MainTitleState::Extra))
+                    .with_system(title_spawn_curried(&*EXTRA_TITLE_LAYOUT)),
+            )
+            .add_system_set(
+                SystemSet::on_update(UiState::from(MainTitleState::Extra))
+                    .with_system(title_load_images_curried(&*EXTRA_TITLE_RES_MAP))
+                    .with_system(ui_button_event_curried(
+                        &*EXTRA_TITLE_BUTTON_STATE_MAP,
+                        &*EXTRA_TITLE_RES_MAP,
+                    )),
+            )
+            .add_system_set(
+                SystemSet::on_exit(UiState::from(MainTitleState::Extra))
+                    .with_system(title_despawn_curried(&*EXTRA_TITLE_RES_MAP))
+            )
+            // config ui
+            .add_system_set(
+                SystemSet::on_enter(UiState::from(MainTitleState::Extra))
+                    .with_system(title_spawn_curried(&*CONFIG_SPEED_TITLE_LAYOUT)),
+            )
+            .add_system_set(
+                SystemSet::on_update(UiState::from(MainTitleState::Extra))
+                    .with_system(title_load_images_curried(&*CONFIG_SPEED_TITLE_RES_MAP))
+                    .with_system(ui_button_event_curried(
+                        &*CONFIG_SPEED_TITLE_BUTTON_STATE_MAP,
+                        &*CONFIG_SPEED_TITLE_RES_MAP,
+                    )),
+            )
+            .add_system_set(
+                SystemSet::on_exit(UiState::from(MainTitleState::Extra))
+                    .with_system(title_despawn_curried(&*CONFIG_SPEED_TITLE_RES_MAP))
             )
             .add_system_set(SystemSet::new().with_system(game_exit_button_event));
     }
@@ -87,26 +122,26 @@ fn title_spawn_curried(layout: &'static Vec<Descriptor>) -> impl Fn(Commands, Re
     }
 }
 
-// TODO: Text2dBundle CANNOT be added with UiBundle
-fn start_title_text_bundle_spawn(mut commands: Commands) {
-    commands
-        .spawn(Text2dBundle::from(text!(
-            (540.0, 90.0),
-            (60.0, WINDOW_HEIGHT - 470.0),
-            28.0,
-            (255.0, 255.0, 255.0)
-        )))
-        .insert(START_TITLE_DIALOG_TEXTBOX_GUID);
-    commands
-        .spawn(Text2dBundle::from(text!(
-            (125.0, 35.0),
-            // (55.0, WINDOW_HEIGHT - 390.0),
-            (127.5, WINDOW_HEIGHT - 407.5), // Center the text
-            24.0,
-            (255.0, 255.0, 255.0)
-        )))
-        .insert(START_TITLE_NAME_TEXTBOX_GUID);
-}
+// // TODO: Text2dBundle CANNOT be added with UiBundle
+// fn start_title_text_bundle_spawn(mut commands: Commands) {
+//     commands
+//         .spawn(Text2dBundle::from(text!(
+//             (540.0, 90.0),
+//             (60.0, WINDOW_HEIGHT - 470.0),
+//             28.0,
+//             (255.0, 255.0, 255.0)
+//         )))
+//         .insert(START_TITLE_DIALOG_TEXTBOX_GUID);
+//     commands
+//         .spawn(Text2dBundle::from(text!(
+//             (125.0, 35.0),
+//             // (55.0, WINDOW_HEIGHT - 390.0),
+//             (127.5, WINDOW_HEIGHT - 407.5), // Center the text
+//             24.0,
+//             (255.0, 255.0, 255.0)
+//         )))
+//         .insert(START_TITLE_NAME_TEXTBOX_GUID);
+// }
 
 fn change_origin(mut query: Query<&mut OrthographicProjection>) {
     for mut orth in query.iter_mut() {
