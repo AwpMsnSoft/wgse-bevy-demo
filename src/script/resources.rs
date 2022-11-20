@@ -52,10 +52,10 @@ impl WgsScript {
                     if command == String::from("label") {
                         let (_, label) = scanf!(line, ".{} {}", String, String).unwrap();
                         script
-                        .0
-                        .label_map
-                        .0
-                        .insert(label, script.0.commands.len() - 1);
+                            .0
+                            .label_map
+                            .0
+                            .insert(label, script.0.commands.len() - 1);
                     }
                 }
                 // No argument command
@@ -100,16 +100,17 @@ impl AssetLoader for WgsScriptLoader {
     }
 }
 
-#[derive(Component, Debug)]
-pub struct WgsScriptResources;
+#[derive(Component, Debug, Resource)]
+pub struct WgsScriptResources(pub Handle<WgsScript>);
 
 impl WgsScriptResources {
-    pub fn new(asset_server: &AssetServer) {
+    pub fn new(asset_server: &AssetServer) -> Self {
         // let _ = asset_server.load_folder("script").or_else(|err| {
         //     error!("Failed to load script folder! Error: {}", err);
         //     Err(err)
         // });
         let handle: Handle<WgsScript> = asset_server.load("script/init.wgs");
         debug!("Loaded script/init.wgs, handle: {:?}", handle);
+        Self(handle)
     }
 }

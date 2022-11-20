@@ -151,7 +151,7 @@ pub fn dialog_textbox_text_system(
                         .expect(&format!("Split message {} failed.", message));
                     // Reset timer and cursor
                     *cursor = 0;
-                    *timer = Timer::from_seconds(0.016, true);
+                    *timer = Timer::from_seconds(0.016, TimerMode::Repeating);
                     // Pre-fill all text section
                     (0..4).for_each(|i| {
                         text.sections[i].value = String::new();

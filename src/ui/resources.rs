@@ -4,7 +4,7 @@ use lazy_static::lazy_static;
 use std::collections::HashMap;
 
 /// The image of each widget is stored in this resource.
-#[derive(Component, Debug)]
+#[derive(Component, Debug, Resource)]
 pub struct UiImageResources(pub HashMap<&'static str, Handle<Image>>);
 
 impl UiImageResources {
@@ -15,7 +15,10 @@ impl UiImageResources {
             for (_, &path) in res {
                 image_map.insert(path, asset_server.load(path));
             }
-        image_map.insert("default.png", asset_server.load("pictures/button/default.png"));
+            image_map.insert(
+                "default.png",
+                asset_server.load("pictures/button/default.png"),
+            );
         }
         UiImageResources(image_map)
     }
@@ -104,7 +107,7 @@ lazy_static! {
 }
 
 /// The font used in the game.
-#[derive(Component, Debug)]
+#[derive(Component, Debug, Resource)]
 pub struct FontResources(pub Handle<Font>);
 
 impl FontResources {

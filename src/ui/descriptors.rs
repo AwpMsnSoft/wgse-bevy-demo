@@ -58,14 +58,14 @@ pub fn widget_descriptor_spawn(parent: &mut ChildBuilder, descriptor: &Descripto
     let mut main_command = match &descriptor.content {
         WidgetDescriptor::button(button) => {
             debug!("Spawning button {:?}: {:?}", descriptor.id, button);
-            parent.spawn_bundle(WidgetBundle {
+            parent.spawn(WidgetBundle {
                 id: WidgetId(descriptor.id),
                 children: ButtonBundle::from(button.clone()),
             })
         }
         WidgetDescriptor::image(image) => {
             debug!("Spawning image {:?}: {:?}", descriptor.id, image);
-            parent.spawn_bundle(WidgetBundle {
+            parent.spawn(WidgetBundle {
                 id: WidgetId(descriptor.id),
                 children: ImageBundle::from(image.clone()),
             })

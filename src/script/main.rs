@@ -32,8 +32,5 @@ impl Plugin for ScriptPlugin {
 
 pub fn init_wgs_virtualmachine(mut command: Commands, scripts: Res<Assets<WgsScript>>) {
     debug!("Initializing wgs script virtual machine.");
-    command
-        .spawn()
-        .insert(WgsVirtualMachine::init())
-        .insert(WgsContext::init(&scripts));
+    command.spawn((WgsVirtualMachine::init(), WgsContext::init(&scripts)));
 }

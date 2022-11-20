@@ -76,7 +76,7 @@ fn title_spawn_curried(layout: &'static Vec<Descriptor>) -> impl Fn(Commands, Re
         debug!("Spawning title. current state: {:?}", ui_state);
         for descriptor in layout.iter() {
             // Logistic root node of this title
-            let mut command = commands.spawn_bundle(NodeBundle {
+            let mut command = commands.spawn(NodeBundle {
                 ..Default::default()
             });
             // Generate a new entity and it's children by descriptor
@@ -90,7 +90,7 @@ fn title_spawn_curried(layout: &'static Vec<Descriptor>) -> impl Fn(Commands, Re
 // TODO: Text2dBundle CANNOT be added with UiBundle
 fn start_title_text_bundle_spawn(mut commands: Commands) {
     commands
-        .spawn_bundle(Text2dBundle::from(text!(
+        .spawn(Text2dBundle::from(text!(
             (540.0, 90.0),
             (60.0, WINDOW_HEIGHT - 470.0),
             28.0,
@@ -98,7 +98,7 @@ fn start_title_text_bundle_spawn(mut commands: Commands) {
         )))
         .insert(START_TITLE_DIALOG_TEXTBOX_GUID);
     commands
-        .spawn_bundle(Text2dBundle::from(text!(
+        .spawn(Text2dBundle::from(text!(
             (125.0, 35.0),
             // (55.0, WINDOW_HEIGHT - 390.0),
             (127.5, WINDOW_HEIGHT - 407.5), // Center the text
