@@ -4,4 +4,5 @@ pub enum TextRenderingState {
     Pendding(String),
     Rendering,
     Done,
+    Terminated,
 }

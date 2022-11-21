@@ -2,7 +2,7 @@ use bevy::{
     prelude::*,
     text::{Text2dBounds, Text2dSize},
 };
-use serde::{Deserialize, Serialize, __private::de};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Component, PartialEq, Eq, Hash)]
 pub struct WidgetId(pub i32);

@@ -36,7 +36,7 @@ pub fn dialog_textbox_button_system(
                             .set(TextRenderingState::Done)
                             .expect("text_rendering_state.set(TextRenderingState::Done) failed.");
                     }
-                    TextRenderingState::Done => {
+                    TextRenderingState::Done | TextRenderingState::Terminated => {
                         // Get next dialog from script
                         debug!("Getting next dialog from script...");
                         next.send(wgs::Next {});
@@ -89,8 +89,8 @@ pub fn dialog_textbox_text_trigger(
                     TextRenderingState::Pendding(_) => {
                         unreachable!("Double click in one frame will NEVER happend.")
                     }
-                    TextRenderingState::Rendering => TextRenderingState::Done,
-                    TextRenderingState::Done => {
+                    TextRenderingState::Rendering => TextRenderingState::Terminated,
+                    TextRenderingState::Done | TextRenderingState::Terminated => {
                         TextRenderingState::Pendding(message.message.clone())
                     }
                 })
@@ -202,7 +202,7 @@ pub fn dialog_textbox_text_system(
                         }
                     }
                 }
-                TextRenderingState::Done => {
+                TextRenderingState::Done | TextRenderingState::Terminated => {
                     let line = splited_message.len();
                     (0..3.min(line)).for_each(|i| {
                         text.sections[i].value = splited_message[line - 3.min(line) + i].clone();
