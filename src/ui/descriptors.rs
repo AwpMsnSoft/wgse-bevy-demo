@@ -1,7 +1,4 @@
-use bevy::{
-    prelude::*,
-    text::{Text2dBounds, Text2dSize},
-};
+use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Component, PartialEq, Eq, Hash)]
@@ -94,6 +91,7 @@ pub fn widget_descriptor_spawn(parent: &mut ChildBuilder, descriptor: &Descripto
 pub struct ButtonDescriptor {
     pub size: Vec2,
     pub position: Vec2,
+    pub z_index: i32,
 }
 
 impl From<ButtonDescriptor> for ButtonBundle {
@@ -113,6 +111,7 @@ impl From<ButtonDescriptor> for ButtonBundle {
                 },
                 ..Default::default()
             },
+            z_index: ZIndex::Global(descriptor.z_index),
             ..Default::default()
         }
     }
@@ -120,10 +119,11 @@ impl From<ButtonDescriptor> for ButtonBundle {
 
 #[macro_export]
 macro_rules! button {
-    ($size: expr, $position: expr) => {{
+    ($size: expr, $position: expr, $z_index: expr) => {{
         ButtonDescriptor {
             size: Vec2::from($size),
             position: Vec2::from($position),
+            z_index: $z_index,
         }
     }};
 }
@@ -145,6 +145,7 @@ pub struct ImageDescriptor {
     pub rotation: f32,
     #[serde(default)]
     pub scale: Scale2D,
+    pub z_index: i32,
 }
 
 impl From<ImageDescriptor> for ImageBundle {
@@ -169,6 +170,7 @@ impl From<ImageDescriptor> for ImageBundle {
                 scale: Vec3::new(descriptor.scale.0.x, descriptor.scale.0.y, 1.0),
                 ..Default::default()
             },
+            z_index: ZIndex::Global(descriptor.z_index),
             ..Default::default()
         }
     }
@@ -176,10 +178,11 @@ impl From<ImageDescriptor> for ImageBundle {
 
 #[macro_export]
 macro_rules! image {
-    ($size: expr, $position: expr) => {{
+    ($size: expr, $position: expr, $z_index: expr) => {{
         ImageDescriptor {
             size: Vec2::from($size),
             position: Vec2::from($position),
+            z_index: $z_index,
             ..Default::default()
         }
     }};
@@ -197,6 +200,7 @@ pub struct TextDescriptor {
     pub position: Vec2,
     #[serde(default)]
     pub font: FontSettings,
+    pub z_index: i32,
 }
 
 impl From<TextDescriptor> for TextBundle {
@@ -231,40 +235,7 @@ impl From<TextDescriptor> for TextBundle {
                 ..default()
             },
             transform: Transform::from_xyz(descriptor.position.x, descriptor.position.y, 0.0),
-            ..default()
-        }
-    }
-}
-
-impl From<TextDescriptor> for Text2dBundle {
-    fn from(descriptor: TextDescriptor) -> Self {
-        Self {
-            text: Text::from_sections(vec![
-                TextSection::new(
-                    "",
-                    TextStyle {
-                        font_size: descriptor.font.size,
-                        color: Color::rgb(
-                            descriptor.font.color.x,
-                            descriptor.font.color.y,
-                            descriptor.font.color.z,
-                        ),
-                        ..Default::default()
-                    },
-                );
-                4
-            ])
-            .with_alignment(TextAlignment {
-                vertical: VerticalAlign::Top,
-                horizontal: HorizontalAlign::Left,
-            }),
-            text_2d_bounds: Text2dBounds {
-                size: Vec2::new(descriptor.size.x - 10.0, descriptor.size.y - 10.0),
-            },
-            text_2d_size: Text2dSize {
-                size: Vec2::new(descriptor.size.x - 10.0, descriptor.size.y - 10.0),
-            },
-            transform: Transform::from_xyz(descriptor.position.x, descriptor.position.y, 0.0),
+            z_index: ZIndex::Global(descriptor.z_index),
             ..default()
         }
     }
@@ -272,7 +243,7 @@ impl From<TextDescriptor> for Text2dBundle {
 
 #[macro_export]
 macro_rules! text {
-    ($size: expr, $position: expr, $font_size: expr, $color: expr) => {{
+    ($size: expr, $position: expr, $font_size: expr, $color: expr, $z_index: expr) => {{
         TextDescriptor {
             size: Vec2::from($size),
             position: Vec2::from($position),
@@ -280,6 +251,7 @@ macro_rules! text {
                 size: $font_size,
                 color: Vec3::from($color),
             },
+            z_index: $z_index,
             ..Default::default()
         }
     }};
@@ -292,7 +264,7 @@ pub struct GroupDescriptor(pub Vec<Descriptor>);
 fn test_image_serialization() {
     let image = Descriptor {
         id: 0,
-        content: WidgetDescriptor::image(image!((100.0, 100.0), (0.0, 0.0))),
+        content: WidgetDescriptor::image(image!((100.0, 100.0), (0.0, 0.0), 1)),
         children: None,
     };
     let serialized = serde_json::to_string(&image).unwrap();
@@ -301,7 +273,7 @@ fn test_image_serialization() {
 
 #[test]
 fn test_image_deserialization() {
-    let serialized = r#"{"id":0,"image":{"size":[100.0,100.0],"position":[0.0,0.0]}}"#;
+    let serialized = r#"{"id":0,"image":{"size":[100.0,100.0],"position":[0.0,0.0],"z_index":1}}"#;
     let image = serde_json::from_str::<Descriptor>(serialized).unwrap();
     println!("{:?}", image);
 }
