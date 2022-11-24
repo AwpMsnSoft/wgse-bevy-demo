@@ -1,5 +1,4 @@
 // #![windows_subsystem = "windows"]
-use crate::script::resources::WgsScriptResources;
 use crate::ui::{
     resources::{FontResources, UiImageResources},
     ui::{WINDOW_HEIGHT, WINDOW_WIDTH},
@@ -55,6 +54,5 @@ fn setup(mut command: Commands, asset_server: Res<AssetServer>) {
     command.spawn(Camera2dBundle::default());
     command.insert_resource(UiImageResources::new(&asset_server));
     command.insert_resource(FontResources::new(&asset_server));
-    command.insert_resource(WgsScriptResources::new(&asset_server));
     info!("Game initialized.");
 }

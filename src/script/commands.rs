@@ -52,14 +52,15 @@ pub fn wgse_command_system_next(
     mut trigger: EventReader<Next>,
     mut ev: EventWriter<WgsEvent>,
 ) {
-    for _ in trigger.iter() {
+    if trigger.iter().last().is_some() {
         let (virtual_machine, mut context) = query.single_mut();
-        let script = scripts.get(&context.script).unwrap();
-        virtual_machine.exec(
-            script.0.commands[context.registers.ip as usize].clone(),
-            &mut ev,
-        );
-        context.registers.ip += 1;
+        if let Some(script) = scripts.get(&context.script.clone()) {
+            virtual_machine.exec(
+                script.0.commands[context.registers.ip as usize].clone(),
+                &mut ev,
+            );
+            context.registers.ip += 1;
+        }
     }
 }
 
@@ -74,12 +75,12 @@ pub struct Chain {
 
 pub fn wgse_command_system_chain(
     mut query: Query<(&WgsVirtualMachine, &mut WgsContext)>,
-    mut next: EventReader<Chain>,
-    scripts: Res<Assets<WgsScript>>,
+    mut chain: EventReader<Chain>,
+    asset_server: Res<AssetServer>,
 ) {
     let (_, mut context) = query.single_mut();
-    if let Some(path) = next.iter().last() {
-        context.load(&path.next, scripts);
+    if let Some(path) = chain.iter().last() {
+        context.load(&path.next, asset_server);
     }
 }
 

@@ -28,16 +28,17 @@ pub struct WgsContext {
 }
 
 impl WgsContext {
-    pub fn init(scripts: &Res<Assets<WgsScript>>) -> Self {
+    pub fn init(asset_server: Res<AssetServer>) -> Self {
         Self {
             // TODO: set init script's path by `WgsScriptSettings` resource.
-            script: scripts.get_handle("script/init.wgs").clone(),
+            script: asset_server.load("script/init.wgs"),
             registers: WgsRegisters::default(),
         }
     }
 
-    pub fn load(&mut self, path: &str, scripts: Res<Assets<WgsScript>>) {
-        self.script = scripts.get_handle(path).clone();
+    pub fn load(&mut self, path: &str, asset_server: Res<AssetServer>) {
+        debug!("trying load script/{}.wgs", path);
+        self.script = asset_server.load(format!("script/{}.wgs", path));
         self.registers.reset();
     }
 }

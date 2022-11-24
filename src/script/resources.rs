@@ -99,18 +99,3 @@ impl AssetLoader for WgsScriptLoader {
         &["wgs"]
     }
 }
-
-#[derive(Component, Debug, Resource)]
-pub struct WgsScriptResources(pub Handle<WgsScript>);
-
-impl WgsScriptResources {
-    pub fn new(asset_server: &AssetServer) -> Self {
-        // let _ = asset_server.load_folder("script").or_else(|err| {
-        //     error!("Failed to load script folder! Error: {}", err);
-        //     Err(err)
-        // });
-        let handle: Handle<WgsScript> = asset_server.load("script/init.wgs");
-        debug!("Loaded script/init.wgs, handle: {:?}", handle);
-        Self(handle)
-    }
-}
