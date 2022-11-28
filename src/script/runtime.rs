@@ -65,6 +65,7 @@ impl WgsVirtualMachine {
             "label" => ev.send(WgsEvent::Lable(cmd)),
             "next" => ev.send(WgsEvent::Next(cmd)),
             "exit" => ev.send(WgsEvent::Exit(cmd)),
+            "cg" => ev.send(WgsEvent::Cg(cmd)),
             _ => panic!("Unknown command: {}", cmd.command),
         }
     }
@@ -80,6 +81,7 @@ pub enum WgsEvent {
     // one arg event
     Next(WgsCommand),
     Chain(WgsCommand),
+    Cg(WgsCommand),
     // multi args event
     Message(WgsCommand),
 }
@@ -92,6 +94,7 @@ pub fn wgse_event_dispatcher(
     mut chain: EventWriter<wgs::Chain>,
     mut lable: EventWriter<wgs::Lable>,
     // mut next: EventWriter<wgs::Next>,
+    mut cg: EventWriter<wgs::Cg>,
     mut exit: EventWriter<wgs::Exit>,
 ) {
     for event in ev.iter() {
@@ -113,6 +116,9 @@ pub fn wgse_event_dispatcher(
                     .iter()
                     .skip(1)
                     .fold(String::new(), |acc, x| acc + x + " "),
+            }),
+            WgsEvent::Cg(cmd) => cg.send(wgs::Cg {
+                path: cmd.args[0].clone(),
             }),
         }
     }

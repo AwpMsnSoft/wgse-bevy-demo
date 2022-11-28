@@ -46,6 +46,7 @@ fn main() {
         .add_plugin(ui::main::UiPlugin)
         .add_plugin(script::main::ScriptPlugin)
         .add_plugin(text::main::TextPlugin)
+        .add_plugin(cg::main::CgPlugin)
         .add_startup_system(setup)
         .run();
 }

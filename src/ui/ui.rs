@@ -46,8 +46,17 @@ lazy_static! {
 lazy_static! {
     pub static ref START_TITLE_LAYOUT: Vec<Descriptor> = vec![descriptor!(
         START_TITLE_BG_GUID.0,
-        WidgetDescriptor::image(image!((WINDOW_WIDTH, WINDOW_HEIGHT), (0.0, 0.0), 0)),
+        WidgetDescriptor::image(image!((WINDOW_WIDTH, WINDOW_HEIGHT), (0.0, 0.0), 1)),
         Some(GroupDescriptor(vec![
+            // background
+            descriptor!(
+                START_TITLE_CG_GUID.0,
+                WidgetDescriptor::image(image!(
+                    (WINDOW_WIDTH, WINDOW_HEIGHT), (0.0, 0.0), 0
+                )),
+                None
+            ),
+            // Text box
             descriptor!(
                 START_TITLE_DIALOG_TEXTBOX_GUID.0,
                 WidgetDescriptor::text(text!(

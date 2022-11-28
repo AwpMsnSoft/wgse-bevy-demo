@@ -17,6 +17,14 @@ pub struct Message {
     pub message: String,
 }
 
+/// Show a background cg
+///
+/// ### format
+/// `.cg {filename}`
+pub struct Cg {
+    pub path: String,
+}
+
 /// Create a new label.
 ///
 /// In current `.wgs` engine version, we suggest to use `.label` at the beginning of each logic block.
