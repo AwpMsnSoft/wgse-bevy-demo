@@ -122,3 +122,22 @@ impl FontResources {
         // FontResources(asset_server.load("fonts/Ubuntu-MI.ttf"))
     }
 }
+
+lazy_static! {
+    /// Panel const table
+    pub static ref PANNEL_CONST_MAP: HashMap<i32, WidgetId> = {
+        let mut map = HashMap::new();
+        // Panel for cg, bg and tachie
+        map.insert(-1, START_TITLE_BG_GUID); // BG, never changed.
+        map.insert(0, START_TITLE_CG_GUID);  // CG
+        map.insert(1, START_TITLE_TACHIE1_GUID); // TCHE1
+        map.insert(2, START_TITLE_TACHIE2_GUID);
+        map.insert(3, START_TITLE_TACHIE3_GUID);
+        map.insert(4, START_TITLE_TACHIE4_GUID);
+        map.insert(5, START_TITLE_TACHIE5_GUID);
+        // Panel for message
+        map.insert(10, START_TITLE_DIALOG_TEXTBOX_GUID);
+        // map.insert(11, START_TITLE_FULLSCREEN_DIALOG_TEXTBOX_GUID);
+        map
+    };
+}

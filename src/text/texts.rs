@@ -28,13 +28,13 @@ pub fn dialog_textbox_button_system(
             if interaction == &Interaction::Clicked {
                 let current = text_rendering_state.current().clone();
                 match current {
-                    TextRenderingState::Pendding(_) => {
-                        unreachable!("Double click in one frame will NEVER happend.")
-                    }
+                    TextRenderingState::Pendding(_) => { /* Do nothing. */ }
                     TextRenderingState::Rendering => {
-                        text_rendering_state
-                            .set(TextRenderingState::Done)
-                            .expect("text_rendering_state.set(TextRenderingState::Done) failed.");
+                        // TODO: Try NOT ignore setting failure manually
+                        #[allow(unused_must_use)]
+                        {
+                            text_rendering_state.set(TextRenderingState::Done);
+                        }
                     }
                     TextRenderingState::Done | TextRenderingState::Terminated => {
                         // Get next dialog from script

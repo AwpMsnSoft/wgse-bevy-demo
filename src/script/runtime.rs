@@ -8,12 +8,15 @@ use sscanf::scanf;
 pub struct WgsRegisters {
     /// Instructions Register, which is the current excecuting line.
     pub ip: usize,
+    /// Next panel used by wgs command.
+    pub pn: i32,
     // Add more registers here.
 }
 
 impl WgsRegisters {
     pub fn reset(&mut self) {
         self.ip = 0;
+        self.pn = 0;
     }
 }
 
@@ -66,6 +69,7 @@ impl WgsVirtualMachine {
             "next" => ev.send(WgsEvent::Next(cmd)),
             "exit" => ev.send(WgsEvent::Exit(cmd)),
             "cg" => ev.send(WgsEvent::Cg(cmd)),
+            "panel" => ev.send(WgsEvent::Panel(cmd)),
             _ => panic!("Unknown command: {}", cmd.command),
         }
     }
@@ -82,6 +86,7 @@ pub enum WgsEvent {
     Next(WgsCommand),
     Chain(WgsCommand),
     Cg(WgsCommand),
+    Panel(WgsCommand),
     // multi args event
     Message(WgsCommand),
 }
@@ -95,6 +100,7 @@ pub fn wgse_event_dispatcher(
     mut lable: EventWriter<wgs::Lable>,
     // mut next: EventWriter<wgs::Next>,
     mut cg: EventWriter<wgs::Cg>,
+    mut panel: EventWriter<wgs::Panel>,
     mut exit: EventWriter<wgs::Exit>,
 ) {
     for event in ev.iter() {
@@ -120,6 +126,7 @@ pub fn wgse_event_dispatcher(
             WgsEvent::Cg(cmd) => cg.send(wgs::Cg {
                 path: cmd.args[0].clone(),
             }),
+            WgsEvent::Panel(cmd) => panel.send(wgs::Panel(cmd.args[0].parse::<i32>().unwrap())),
         }
     }
 }

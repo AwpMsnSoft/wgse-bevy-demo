@@ -92,6 +92,25 @@ pub fn wgse_command_system_chain(
     }
 }
 
+/// Select the next panel will be used.
+///
+/// ### format
+/// `.panel $panel_id`
+pub struct Panel(pub i32);
+
+pub fn wgse_command_system_panel(
+    mut query: Query<(&WgsVirtualMachine, &mut WgsContext)>,
+    mut panel: EventReader<Panel>,
+    mut trigger: EventWriter<Next>,
+) {
+    let (_, mut context) = query.single_mut();
+    if let Some(panel) = panel.iter().last() {
+        context.registers.pn = panel.0;
+        debug!("Registers changed to {:?}", context.registers);
+        trigger.send(Next {});
+    }
+}
+
 /// Exit the game process
 ///
 /// ### format
