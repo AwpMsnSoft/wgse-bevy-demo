@@ -30,7 +30,7 @@ pub fn dialog_textbox_button_system(
                 match current {
                     TextRenderingState::Pendding(_) => { /* Do nothing. */ }
                     TextRenderingState::Rendering => {
-                        // TODO: Try NOT ignore setting failure manually
+                        // TODO: avoid ignore setting failure manually
                         #[allow(unused_must_use)]
                         {
                             text_rendering_state.set(TextRenderingState::Done);
@@ -196,9 +196,14 @@ pub fn dialog_textbox_text_system(
                         // Inc cursor
                         *cursor += 1;
                         if *cursor >= *splited_point.last().unwrap() {
-                            text_rendering_state.set(TextRenderingState::Done).expect(
-                                "text_rendering_state.set(TextRenderingState::Done) failed.",
-                            );
+                            // text_rendering_state.set(TextRenderingState::Done).expect(
+                            //     "text_rendering_state.set(TextRenderingState::Done) failed.",
+                            // );
+                            // TODO: avoid ignore setting failure manually
+                            #[allow(unused_must_use)]
+                            {
+                                text_rendering_state.set(TextRenderingState::Done);
+                            }
                         }
                     }
                 }

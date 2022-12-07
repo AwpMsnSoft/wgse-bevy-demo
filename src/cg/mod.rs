@@ -1,2 +1,2 @@
-pub(crate) mod background;
+pub(crate) mod image;
 pub(crate) mod main;

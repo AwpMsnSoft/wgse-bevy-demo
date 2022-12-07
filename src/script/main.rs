@@ -17,7 +17,7 @@ impl Plugin for ScriptPlugin {
             .add_event::<wgs::Lable>()
             .add_event::<wgs::Next>()
             .add_event::<wgs::Exit>()
-            .add_event::<wgs::Cg>()
+            .add_event::<wgs::Image>()
             .add_event::<wgs::Panel>()
             .add_event::<WgsEvent>()
             .add_startup_system(init_wgs_virtualmachine)

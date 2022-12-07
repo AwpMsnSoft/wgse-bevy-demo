@@ -68,7 +68,7 @@ impl WgsVirtualMachine {
             "label" => ev.send(WgsEvent::Lable(cmd)),
             "next" => ev.send(WgsEvent::Next(cmd)),
             "exit" => ev.send(WgsEvent::Exit(cmd)),
-            "cg" => ev.send(WgsEvent::Cg(cmd)),
+            "image" => ev.send(WgsEvent::Image(cmd)),
             "panel" => ev.send(WgsEvent::Panel(cmd)),
             _ => panic!("Unknown command: {}", cmd.command),
         }
@@ -85,7 +85,7 @@ pub enum WgsEvent {
     // one arg event
     Next(WgsCommand),
     Chain(WgsCommand),
-    Cg(WgsCommand),
+    Image(WgsCommand),
     Panel(WgsCommand),
     // multi args event
     Message(WgsCommand),
@@ -99,7 +99,7 @@ pub fn wgse_event_dispatcher(
     mut chain: EventWriter<wgs::Chain>,
     mut lable: EventWriter<wgs::Lable>,
     // mut next: EventWriter<wgs::Next>,
-    mut cg: EventWriter<wgs::Cg>,
+    mut image: EventWriter<wgs::Image>,
     mut panel: EventWriter<wgs::Panel>,
     mut exit: EventWriter<wgs::Exit>,
 ) {
@@ -123,7 +123,7 @@ pub fn wgse_event_dispatcher(
                     .skip(1)
                     .fold(String::new(), |acc, x| acc + x + " "),
             }),
-            WgsEvent::Cg(cmd) => cg.send(wgs::Cg {
+            WgsEvent::Image(cmd) => image.send(wgs::Image {
                 path: cmd.args[0].clone(),
             }),
             WgsEvent::Panel(cmd) => panel.send(wgs::Panel(cmd.args[0].parse::<i32>().unwrap())),

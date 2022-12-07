@@ -125,7 +125,7 @@ impl FontResources {
 
 lazy_static! {
     /// Panel const table
-    pub static ref PANNEL_CONST_MAP: HashMap<i32, WidgetId> = {
+    pub static ref PANEL_CONST_MAP: HashMap<i32, WidgetId> = {
         let mut map = HashMap::new();
         // Panel for cg, bg and tachie
         map.insert(-1, START_TITLE_BG_GUID); // BG, never changed.

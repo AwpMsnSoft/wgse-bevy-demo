@@ -17,11 +17,11 @@ pub struct Message {
     pub message: String,
 }
 
-/// Show a background cg
+/// Show an image on given panel
 ///
 /// ### format
-/// `.cg {filename}`
-pub struct Cg {
+/// `.image {filename}`
+pub struct Image {
     pub path: String,
 }
 
