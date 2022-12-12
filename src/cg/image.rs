@@ -23,7 +23,7 @@ pub fn image_display_system(
         {
             if let Some(image) = image.iter().last() {
                 *old_image = asset_server
-                    .load(format!("pictures/cg/{}.png", image.path))
+                    .load(format!("pictures/image/{}.png", image.path))
                     .into();
                 trigger.send(wgs::Next {});
             }
