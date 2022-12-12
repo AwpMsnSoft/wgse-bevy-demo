@@ -46,13 +46,21 @@ lazy_static! {
 lazy_static! {
     pub static ref START_TITLE_LAYOUT: Vec<Descriptor> = vec![descriptor!(
         START_TITLE_BG_GUID.0,
-        WidgetDescriptor::image(image!((WINDOW_WIDTH, WINDOW_HEIGHT), (0.0, 0.0), 1)),
+        WidgetDescriptor::image(image!((WINDOW_WIDTH, WINDOW_HEIGHT), (0.0, 0.0), 2)),
         Some(GroupDescriptor(vec![
             // background
             descriptor!(
                 START_TITLE_CG_GUID.0,
                 WidgetDescriptor::image(image!(
                     (WINDOW_WIDTH, WINDOW_HEIGHT), (0.0, 0.0), 0
+                )),
+                None
+            ),
+            // chara
+            descriptor!(
+                START_TITLE_TACHIE1_GUID.0,
+                WidgetDescriptor::image(image!(
+                    (600.0, 600.0), (100.0, 0.0), 1
                 )),
                 None
             ),
@@ -63,7 +71,7 @@ lazy_static! {
                     (540.0, 90.0),
                     (60.0, 470.0),
                     28.0,
-                    (255.0, 255.0, 255.0),
+                    (255.0, 255.0, 255.0, 220.0),
                     3
                 )),
                 None
@@ -75,7 +83,7 @@ lazy_static! {
                     (65.0, 395.0),
                     // (127.5, 407.5), // Center the text
                     24.0,
-                    (255.0, 255.0, 255.0),
+                    (255.0, 255.0, 255.0, 220.0),
                     3
                 )),
                 None

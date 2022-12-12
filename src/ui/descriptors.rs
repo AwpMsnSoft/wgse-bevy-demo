@@ -191,7 +191,7 @@ macro_rules! image {
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Component)]
 pub struct FontSettings {
     pub size: f32,
-    pub color: Vec3,
+    pub color: Vec4,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Component)]
@@ -211,11 +211,13 @@ impl From<TextDescriptor> for TextBundle {
                     "",
                     TextStyle {
                         font_size: descriptor.font.size,
-                        color: Color::rgb(
-                            descriptor.font.color.x,
-                            descriptor.font.color.y,
-                            descriptor.font.color.z,
+                        color: Color::rgba(
+                            descriptor.font.color.x / 255.0,
+                            descriptor.font.color.y / 255.0,
+                            descriptor.font.color.z / 255.0,
+                            descriptor.font.color.w / 255.0
                         ),
+                        // color: Color::GRAY,
                         ..Default::default()
                     },
                 );
@@ -249,7 +251,7 @@ macro_rules! text {
             position: Vec2::from($position),
             font: FontSettings {
                 size: $font_size,
-                color: Vec3::from($color),
+                color: Vec4::from($color),
             },
             z_index: $z_index,
             ..Default::default()
