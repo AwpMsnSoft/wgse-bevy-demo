@@ -64,6 +64,20 @@ lazy_static! {
                 )),
                 None
             ),
+            descriptor!(
+                START_TITLE_TACHIE2_GUID.0,
+                WidgetDescriptor::image(image!(
+                    (600.0, 600.0), (-50.0, 0.0), 1
+                )),
+                None
+            ),
+            descriptor!(
+                START_TITLE_TACHIE3_GUID.0,
+                WidgetDescriptor::image(image!(
+                    (600.0, 600.0), (250.0, 0.0), 1
+                )),
+                None
+            ),
             // Text box
             descriptor!(
                 START_TITLE_DIALOG_TEXTBOX_GUID.0,

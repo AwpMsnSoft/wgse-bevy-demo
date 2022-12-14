@@ -65,6 +65,8 @@ lazy_static! {
         map.insert(START_TITLE_BG_GUID, "pictures/in_game_mes_win.png");
         map.insert(START_TITLE_CG_GUID, "pictures/default.png");
         map.insert(START_TITLE_TACHIE1_GUID, "pictures/default.png");
+        map.insert(START_TITLE_TACHIE2_GUID, "pictures/default.png");
+        map.insert(START_TITLE_TACHIE3_GUID, "pictures/default.png");
         map.insert(START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID, "pictures/default.png"); // dummy button for dialog textbox
         map
     };
