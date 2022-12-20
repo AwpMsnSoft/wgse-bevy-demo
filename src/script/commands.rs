@@ -2,9 +2,12 @@
 //!
 //! In order to avoid name collision, Never import this module by `use crate::script::commands::*;`.
 //! Consider to import `use crate::script::commands as wgs;` and use commands via `wgs::<CommandName>` instead.
-use crate::script::{
-    resources::WgsScript,
-    runtime::{WgsContext, WgsEvent, WgsVirtualMachine},
+use crate::{
+    script::{
+        resources::WgsScript,
+        runtime::{WgsContext, WgsEvent, WgsVirtualMachine},
+    },
+    ui::descriptors::WidgetId,
 };
 use bevy::{app::AppExit, prelude::*};
 
@@ -100,6 +103,7 @@ pub struct Panel(pub i32);
 
 pub fn wgse_command_system_panel(
     mut query: Query<(&WgsVirtualMachine, &mut WgsContext)>,
+    mut widgets: Query<&WidgetId>,
     mut panel: EventReader<Panel>,
     mut trigger: EventWriter<Next>,
 ) {
@@ -107,6 +111,10 @@ pub fn wgse_command_system_panel(
     if let Some(panel) = panel.iter().last() {
         context.registers.pn = panel.0;
         debug!("Registers changed to {:?}", context.registers);
+        // Special options for some kinds of panel...
+        match panel.0 {
+            _ => { /* do nothing */ }
+        }
         trigger.send(Next {});
     }
 }

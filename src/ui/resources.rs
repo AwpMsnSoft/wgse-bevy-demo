@@ -53,6 +53,8 @@ pub const START_TITLE_CG_GUID: WidgetId = WidgetId(10151);
 pub const START_TITLE_NAME_TEXTBOX_GUID: WidgetId = WidgetId(10152);
 pub const START_TITLE_DIALOG_TEXTBOX_GUID: WidgetId = WidgetId(10153);
 pub const START_TITLE_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID: WidgetId = WidgetId(10154);
+pub const START_TITLE_FULLSCREEN_DIALOG_TEXTBOX_GUID: WidgetId = WidgetId(10155);
+pub const START_TITLE_FULLSCREEN_DIALOG_TEXTBOX_DUMMY_BUTTON_GUID: WidgetId = WidgetId(10156);
 pub const START_TITLE_TACHIE1_GUID: WidgetId = WidgetId(10161);
 pub const START_TITLE_TACHIE2_GUID: WidgetId = WidgetId(10162);
 pub const START_TITLE_TACHIE3_GUID: WidgetId = WidgetId(10163);
@@ -62,7 +64,7 @@ pub const START_TITLE_TACHIE5_GUID: WidgetId = WidgetId(10165);
 lazy_static! {
     pub static ref START_TITLE_RES_MAP: HashMap<WidgetId, &'static str> = {
         let mut map = HashMap::new();
-        map.insert(START_TITLE_BG_GUID, "pictures/in_game_mes_win.png");
+        map.insert(START_TITLE_BG_GUID, "pictures/default.png");
         map.insert(START_TITLE_CG_GUID, "pictures/default.png");
         map.insert(START_TITLE_TACHIE1_GUID, "pictures/default.png");
         map.insert(START_TITLE_TACHIE2_GUID, "pictures/default.png");
@@ -137,7 +139,7 @@ lazy_static! {
         map.insert(5, START_TITLE_TACHIE5_GUID);
         // Panel for message
         map.insert(10, START_TITLE_DIALOG_TEXTBOX_GUID);
-        // map.insert(11, START_TITLE_FULLSCREEN_DIALOG_TEXTBOX_GUID);
+        map.insert(11, START_TITLE_FULLSCREEN_DIALOG_TEXTBOX_GUID);
         map
     };
 }

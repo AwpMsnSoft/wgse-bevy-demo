@@ -2,3 +2,4 @@
 /assets
 *.exe
 debug.log
+assets/script/*.wgs
